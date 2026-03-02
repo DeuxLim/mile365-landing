@@ -47,7 +47,7 @@ class MembershipRequestResource extends JsonResource
             | Multi-select: running, gym, hybrid, swimming, cycling, triathlon
             */
 			'training' => [
-				'types' => $this->training_types,
+				'training_types' => $this->training_types,
 				'experience_level' => $this->experience_level,
 				'years_running' => $this->years_running,
 				'average_run_pace' => $this->average_run_pace,

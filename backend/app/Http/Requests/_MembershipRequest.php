@@ -102,4 +102,13 @@ class _MembershipRequest extends FormRequest
             'media_consent' => 'boolean',
         ];
     }
+
+    protected function prepareForValidation()
+    {
+        if ($this->has('experience_level')) {
+            $this->merge([
+                'experience_level' => strtolower($this->experience_level),
+            ]);
+        }
+    }
 }
