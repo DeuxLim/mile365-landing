@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 const ADMIN_ME_QUERY_KEY = ["admin", "me"] as const;
 
-export function useAdmin() {
+export function useAuthenticatedAdmin() {
 	const queryClient = useQueryClient();
 
 	const query = useQuery({

@@ -8,6 +8,7 @@ import JoinSuccess from "@/features/membership/pages/JoinSuccess.tsx";
 
 import AdminLoginPage from "@/features/admin/pages/AdminLoginPage.tsx";
 import RequireAuth from "@/features/admin/components/RequireAuth";
+import RequireGuest from "@/features/admin/components/RequireGuest";
 import AdminDashboardPage from "@/features/admin/pages/AdminDashboardPage.tsx";
 import AdminLayout from "@/features/admin/layouts/AdminLayout.tsx";
 import MembershipRequestsPage from "@/features/admin/pages/MembershipRequestsPage.tsx";
@@ -46,12 +47,17 @@ export const router = createBrowserRouter([
 		element: <Outlet />,
 		children: [
 			{
-				index: true,
-				element: <AdminLoginPage />,
-			},
-			{
-				path: "login",
-				element: <AdminLoginPage />,
+				element: <RequireGuest />,
+				children: [
+					{
+						index: true,
+						element: <AdminLoginPage />,
+					},
+					{
+						path: "login",
+						element: <AdminLoginPage />,
+					},
+				],
 			},
 			{
 				element: <RequireAuth />,
