@@ -2,7 +2,7 @@ import { useState } from "react";
 import type { MembershipRequest } from "@/features/membership/types/membership-request.types";
 import { useQuery } from "@tanstack/react-query";
 import { getMembershipRequests } from "../admin.service";
-
+import { getAge } from "@/utils/utils.js";
 export default function MembershipRequestsPage() {
 	const { data, isPending, isError } = useQuery({
 		queryKey: ["membershipRequests"],
@@ -32,10 +32,12 @@ export default function MembershipRequestsPage() {
 					<thead className="bg-gray-100 text-left">
 						<tr>
 							<th className="px-4 py-3">Name</th>
-							<th className="px-4 py-3">Email</th>
+							<th className="px-4 py-3">Age</th>
+							<th className="px-4 py-3">Gender</th>
 							<th className="px-4 py-3">Location</th>
-							<th className="px-4 py-3">Level</th>
+							<th className="px-4 py-3">Years Running</th>
 							<th className="px-4 py-3">Status</th>
+							<th className="px-4 py-3">Medical Conditions</th>
 							<th className="px-4 py-3">Actions</th>
 						</tr>
 					</thead>
@@ -47,11 +49,16 @@ export default function MembershipRequestsPage() {
 							>
 								<td className="px-4 py-3 font-medium">
 									{req.identity.first_name +
+										" " +
 										req.identity.last_name}
 								</td>
 
 								<td className="px-4 py-3">
-									{req.identity.email}
+									{getAge(req.identity.birthdate)}
+								</td>
+
+								<td className="px-4 py-3">
+									{req.identity.gender}
 								</td>
 
 								<td className="px-4 py-3">
@@ -59,7 +66,7 @@ export default function MembershipRequestsPage() {
 								</td>
 
 								<td className="px-4 py-3 capitalize">
-									{req.training.experience_level}
+									{req.training.years_running}
 								</td>
 
 								<td className="px-4 py-3">
@@ -75,6 +82,10 @@ export default function MembershipRequestsPage() {
 									>
 										{req.review.status}
 									</span>
+								</td>
+
+								<td className="px-4 py-3">
+									{req.health.medical_conditions}
 								</td>
 
 								<td className="px-4 py-3">
