@@ -139,6 +139,9 @@ export default function Navbar() {
 					<div className="ml-auto hidden md:flex items-center gap-8">
 						<ul className="flex gap-6 text-xs uppercase tracking-widest font-semibold">
 							<li>
+								<a href="/admin/dashboard">Admin Portal</a>
+							</li>
+							<li>
 								<a href="/#gallery">Club Gallery</a>
 							</li>
 						</ul>
