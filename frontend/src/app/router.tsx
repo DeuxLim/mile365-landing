@@ -12,6 +12,7 @@ import RequireGuest from "@/features/admin/components/RequireGuest";
 import AdminDashboardPage from "@/features/admin/pages/AdminDashboardPage.tsx";
 import AdminLayout from "@/features/admin/layouts/AdminLayout.tsx";
 import MembershipRequestsPage from "@/features/admin/pages/MembershipRequestsPage.tsx";
+import ToastProvider from "@/contexts/Toast/ToastProvider.tsx";
 
 const LandingPage = lazy(() => import("../features/landing/pages/LandingPage"));
 
@@ -44,7 +45,11 @@ export const router = createBrowserRouter([
 	},
 	{
 		path: "/admin",
-		element: <Outlet />,
+		element: (
+			<ToastProvider>
+				<Outlet />
+			</ToastProvider>
+		),
 		children: [
 			{
 				element: <RequireGuest />,
