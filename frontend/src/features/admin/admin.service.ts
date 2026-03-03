@@ -30,3 +30,17 @@ export const logoutAdmin = async () => {
 	const response = await api.post("/admin/logout");
 	return response.data;
 };
+
+export const approveMembershipRequest = async (membershipRequestId: string) => {
+	const response = await api.patch(
+		`/admin/membership-requests/${membershipRequestId}/approve`,
+	);
+	return response.data;
+};
+
+export const rejectMembershipRequest = async (membershipRequestId: string) => {
+	const response = await api.patch(
+		`/admin/membership-requests/${membershipRequestId}/reject`,
+	);
+	return response.data;
+};
