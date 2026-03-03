@@ -34,36 +34,51 @@ class MembershipController extends Controller
 
     public function index()
     {
-        $membershipRequests = $this->membershipService->getPendingRequests();
+        $membershipRequests = $this->membershipService->getAllRequests();
 
         return MembershipRequestResource::collection($membershipRequests);
     }
 
-    public function approve(Request $request, $id)
+    public function approve(Request $request, int $id): JsonResponse
     {
-        $adminId = $request->user()->id;
+        $admin = $request->user();
 
-        $membership = $this->membershipService->approveRequest($id, $adminId);
+        if (!$admin) {
+            abort(401, 'Unauthenticated.');
+        }
+
+        $membership = $this->membershipService->approveRequest(
+            $id,
+            $admin->id
+        );
 
         return response()->json([
             'message' => 'Application approved',
-            'data' => new MembershipRequestResource($membership)
-        ]);
+            'data' => new MembershipRequestResource($membership),
+        ], 200);
     }
 
-    public function reject(Request $request, $id)
+    public function reject(Request $request, int $id): JsonResponse
     {
-        $adminId = $request->user()->id;
+        $admin = $request->user();
+
+        if (!$admin) {
+            abort(401, 'Unauthenticated.');
+        }
+
+        $validated = $request->validate([
+            'admin_notes' => ['nullable', 'string', 'max:1000'],
+        ]);
 
         $membership = $this->membershipService->rejectRequest(
             $id,
-            $adminId,
-            $request->input('admin_notes')
+            $admin->id,
+            $validated['admin_notes'] ?? null
         );
 
         return response()->json([
             'message' => 'Application rejected',
-            'data' => new MembershipRequestResource($membership)
-        ]);
+            'data' => new MembershipRequestResource($membership),
+        ], 200);
     }
 }
