@@ -4,6 +4,7 @@ import type {
 	AdminLoginCredentials,
 	AdminUser,
 } from "./types/admin.types";
+import type { Member } from "./types/member.types";
 
 export const submitLoginCredentials = async (
 	credentials: AdminLoginCredentials,
@@ -24,6 +25,11 @@ export const getAuthenticatedAdmin = async (): Promise<AdminUser> => {
 export const getMembershipRequests = async () => {
 	const response = await api.get("/admin/membership-requests");
 	return response.data;
+};
+
+export const getMembers = async (): Promise<Member[]> => {
+	const response = await api.get("/admin/members");
+	return response.data.data;
 };
 
 export const logoutAdmin = async () => {

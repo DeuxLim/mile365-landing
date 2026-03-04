@@ -13,6 +13,7 @@ import AdminDashboardPage from "@/features/admin/pages/AdminDashboardPage.tsx";
 import AdminLayout from "@/features/admin/layouts/AdminLayout.tsx";
 import MembershipRequestsPage from "@/features/admin/pages/MembershipRequestsPage.tsx";
 import ToastProvider from "@/contexts/Toast/ToastProvider.tsx";
+import MembersPage from "@/features/admin/pages/MembersPage.tsx";
 
 const LandingPage = lazy(() => import("../features/landing/pages/LandingPage"));
 
@@ -77,6 +78,10 @@ export const router = createBrowserRouter([
 							{
 								path: "membership-requests",
 								element: <MembershipRequestsPage />,
+							},
+							{
+								path: "members",
+								element: <MembersPage />,
 							},
 						],
 					},
