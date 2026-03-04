@@ -66,10 +66,13 @@ class MembershipService
                 'phone' => $request->phone,
                 'birthdate' => $request->birthdate,
                 'gender' => $request->gender,
+
                 'country' => $request->country,
                 'province' => $request->province,
                 'city' => $request->city,
                 'barangay' => $request->barangay,
+                'location_confirmation' => $request->location_confirmation,
+
                 'training_types' => $request->training_types,
                 'experience_level' => $request->experience_level,
                 'years_running' => $request->years_running,
@@ -77,6 +80,30 @@ class MembershipService
                 'average_run_pace' => $request->average_run_pace,
                 'preferred_run_time' => $request->preferred_run_time,
                 'goals' => $request->goals,
+
+                'fb_group_joined' => $request->fb_group_joined,
+                'community_chat_joined' => $request->community_chat_joined,
+                'platforms_joined' => $request->platforms_joined,
+                'facebook_profile_name' => $request->facebook_profile_name,
+                'messenger_name' => $request->messenger_name,
+
+                'emergency_contact_name' => $request->emergency_contact_name,
+                'emergency_contact_phone' => $request->emergency_contact_phone,
+                'medical_conditions' => $request->medical_conditions,
+                'fitness_acknowledgment' => $request->fitness_acknowledgment,
+
+                'attendance_commitment' => $request->attendance_commitment,
+                'activity_expectation' => $request->activity_expectation,
+                'community_behavior' => $request->community_behavior,
+
+                'how_did_you_hear' => $request->how_did_you_hear,
+                'motivation' => $request->motivation,
+
+                'agreed_to_rules' => $request->agreed_to_rules,
+                'agreed_at' => $request->agreed_at,
+                'safety_commitment' => $request->safety_commitment,
+                'media_consent' => $request->media_consent,
+
                 'joined_at' => now(),
             ]);
 
