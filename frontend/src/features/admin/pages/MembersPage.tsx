@@ -5,10 +5,12 @@ import { useState } from "react";
 import { getAge } from "@/utils/utils";
 
 export default function MembersPage() {
+	const [page, setPage] = useState(1);
 	const { data, isPending, isError } = useQuery({
-		queryKey: ["member", "index"],
-		queryFn: getMembers,
+		queryKey: ["members", page],
+		queryFn: () => getMembers(page),
 		staleTime: 1000 * 60 * 60,
+		placeholderData: (previousData) => previousData,
 	});
 
 	const [selected, setSelected] = useState<Member | null>(null);
@@ -20,6 +22,9 @@ export default function MembersPage() {
 	if (isError || !data) {
 		return <div className="p-6 text-red-500">Failed to load requests.</div>;
 	}
+
+	const members = data.data;
+	const meta = data.meta;
 
 	return (
 		<div className="p-6 relative">
@@ -42,33 +47,34 @@ export default function MembersPage() {
 						</tr>
 					</thead>
 					<tbody>
-						{data.map((req: Member) => (
+						{members.map((member: Member) => (
 							<tr
-								key={req.id}
+								key={member.id}
 								className="border-t border-zinc-200 hover:bg-gray-50"
 							>
 								<td className="px-4 py-3 font-medium">
-									{req.identity.first_name}{" "}
-									{req.identity.last_name}
+									{member.identity.first_name}{" "}
+									{member.identity.last_name}
 								</td>
 								<td className="px-4 py-3">
-									{getAge(req.identity.birthdate)}
+									{getAge(member.identity.birthdate)}
 								</td>
 								<td className="px-4 py-3 capitalize">
-									{req.identity.gender}
+									{member.identity.gender}
 								</td>
 								<td className="px-4 py-3">
-									{req.location.city}, {req.location.province}
+									{member.location.city},{" "}
+									{member.location.province}
 								</td>
 								<td className="px-4 py-3">
-									{req.training.years_running}
+									{member.training.years_running}
 								</td>
 								<td className="px-4 py-3">
-									{req.health.medical_conditions || "None"}
+									{member.health.medical_conditions || "None"}
 								</td>
 								<td className="px-4 py-3">
 									<button
-										onClick={() => setSelected(req)}
+										onClick={() => setSelected(member)}
 										className="text-blue-600 hover:underline"
 									>
 										View
@@ -78,6 +84,49 @@ export default function MembersPage() {
 						))}
 					</tbody>
 				</table>
+
+				{/* Table Pagination */}
+				<div className="flex items-center justify-between px-4 py-3 border-t border-zinc-200 bg-zinc-50 text-xs">
+					<button
+						disabled={page === 1}
+						onClick={() => setPage((p) => p - 1)}
+						className="px-3 py-1 border border-zinc-200 rounded-md bg-white disabled:opacity-40 hover:bg-gray-50"
+					>
+						Previous
+					</button>
+
+					<div className="flex items-center gap-1">
+						{page > 1 && (
+							<button
+								onClick={() => setPage(page - 1)}
+								className="px-3 py-1 border border-zinc-200 rounded-md bg-white hover:bg-gray-50"
+							>
+								{page - 1}
+							</button>
+						)}
+
+						<span className="px-3 py-1 rounded-md border border-zinc-200 bg-gray-100 text-zinc-900 font-medium">
+							{page}
+						</span>
+
+						{page < meta.last_page && (
+							<button
+								onClick={() => setPage(page + 1)}
+								className="px-3 py-1 border border-zinc-200 rounded-md bg-white hover:bg-gray-50"
+							>
+								{page + 1}
+							</button>
+						)}
+					</div>
+
+					<button
+						disabled={page === meta.last_page}
+						onClick={() => setPage((p) => p + 1)}
+						className="px-3 py-1 border border-zinc-200 rounded-md bg-white disabled:opacity-40 hover:bg-gray-50"
+					>
+						Next
+					</button>
+				</div>
 			</div>
 
 			{selected && (

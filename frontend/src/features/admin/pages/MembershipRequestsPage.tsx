@@ -16,12 +16,25 @@ export default function MembershipRequestsPage() {
 	const queryClient = useQueryClient();
 	const toast = useToast();
 	const [selectedStatus, setSelectedStatus] = useState("pending");
+	const [page, setPage] = useState(1);
 
 	const { data, isPending, isError } = useQuery({
-		queryKey: ["membershipRequests"],
-		queryFn: getMembershipRequests,
+		queryKey: ["membershipRequests", page],
+		queryFn: () => getMembershipRequests(page),
 		staleTime: 1000 * 60 * 10,
+		placeholderData: (previous) => previous,
 	});
+
+	const requests = useMemo(
+		() =>
+			data?.data.filter(
+				(request: MembershipRequest) =>
+					request.review.status === selectedStatus,
+			),
+		[data?.data, selectedStatus],
+	);
+
+	const meta = data?.meta;
 
 	const approveMutation = useMutation({
 		mutationFn: approveMembershipRequest,
@@ -82,15 +95,6 @@ export default function MembershipRequestsPage() {
 	const handleStatusSelection = useCallback((selectedStatus: string) => {
 		setSelectedStatus(selectedStatus);
 	}, []);
-
-	const requests = useMemo(
-		() =>
-			data?.data.filter(
-				(request: MembershipRequest) =>
-					request.review.status === selectedStatus,
-			),
-		[data?.data, selectedStatus],
-	);
 
 	const [selected, setSelected] = useState<MembershipRequest | null>(null);
 
@@ -195,6 +199,49 @@ export default function MembershipRequestsPage() {
 						))}
 					</tbody>
 				</table>
+
+				{/* Table Pagination */}
+				<div className="flex items-center justify-between px-4 py-3 border-t border-zinc-200 bg-zinc-50 text-xs">
+					<button
+						disabled={page === 1}
+						onClick={() => setPage((p) => p - 1)}
+						className="px-3 py-1 border border-zinc-200 rounded-md bg-white disabled:opacity-40 hover:bg-gray-50"
+					>
+						Previous
+					</button>
+
+					<div className="flex items-center gap-1">
+						{page > 1 && (
+							<button
+								onClick={() => setPage(page - 1)}
+								className="px-3 py-1 border border-zinc-200 rounded-md bg-white hover:bg-gray-50"
+							>
+								{page - 1}
+							</button>
+						)}
+
+						<span className="px-3 py-1 rounded-md border border-zinc-200 bg-gray-100 text-zinc-900 font-medium">
+							{page}
+						</span>
+
+						{page < meta.last_page && (
+							<button
+								onClick={() => setPage(page + 1)}
+								className="px-3 py-1 border border-zinc-200 rounded-md bg-white hover:bg-gray-50"
+							>
+								{page + 1}
+							</button>
+						)}
+					</div>
+
+					<button
+						disabled={page === meta.last_page}
+						onClick={() => setPage((p) => p + 1)}
+						className="px-3 py-1 border border-zinc-200 rounded-md bg-white disabled:opacity-40 hover:bg-gray-50"
+					>
+						Next
+					</button>
+				</div>
 			</div>
 
 			{selected && (
