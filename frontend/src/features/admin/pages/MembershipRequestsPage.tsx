@@ -1,14 +1,96 @@
-import { useState } from "react";
-import type { MembershipRequest } from "@/features/membership/types/membership-request.types";
-import { useQuery } from "@tanstack/react-query";
-import { getMembershipRequests } from "../admin.service";
+import { useCallback, useMemo, useState } from "react";
+import type {
+	LaravelValidationError,
+	MembershipRequest,
+} from "@/features/membership/types/membership-request.types";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+	approveMembershipRequest,
+	getMembershipRequests,
+	rejectMembershipRequest,
+} from "../admin.service";
 import { getAge } from "@/utils/utils.js";
+import type { AxiosError } from "axios";
+import useToast from "@/contexts/Toast/useToast";
 export default function MembershipRequestsPage() {
+	const queryClient = useQueryClient();
+	const toast = useToast();
+	const [selectedStatus, setSelectedStatus] = useState("pending");
+
 	const { data, isPending, isError } = useQuery({
 		queryKey: ["membershipRequests"],
 		queryFn: getMembershipRequests,
 		staleTime: 1000 * 60 * 10,
 	});
+
+	const approveMutation = useMutation({
+		mutationFn: approveMembershipRequest,
+
+		onSuccess: (response) => {
+			console.log(response.message);
+
+			queryClient.invalidateQueries({
+				queryKey: ["membershipRequests"],
+			});
+
+			toast.success("Request approved!");
+			setSelected(null);
+		},
+
+		onError: (error: AxiosError<LaravelValidationError>) => {
+			if (error.response?.status === 422) {
+				console.log("Validation error:", error.response.data.errors);
+			} else if (error.response?.status === 404) {
+				console.log("Request not found.");
+			} else {
+				console.log("Unexpected error.");
+			}
+
+			toast.error("Unexpected error occured.");
+		},
+	});
+
+	const rejectMutation = useMutation({
+		mutationFn: rejectMembershipRequest,
+
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: ["membershipRequests"],
+			});
+
+			setSelected(null);
+		},
+
+		onError: (error: AxiosError<LaravelValidationError>) => {
+			if (error.response?.status === 422) {
+				console.log(error.response.data.errors);
+			}
+		},
+	});
+
+	const handleMembershipRequestAction = useCallback(
+		(id: string, action: string) => {
+			if (action === "approve") {
+				approveMutation.mutate(id);
+			} else if (action === "reject") {
+				rejectMutation.mutate(id);
+			}
+		},
+		[approveMutation, rejectMutation],
+	);
+
+	const handleStatusSelection = useCallback((selectedStatus: string) => {
+		setSelectedStatus(selectedStatus);
+	}, []);
+
+	const requests = useMemo(
+		() =>
+			data?.data.filter(
+				(request: MembershipRequest) =>
+					request.review.status === selectedStatus,
+			),
+		[data?.data, selectedStatus],
+	);
 
 	const [selected, setSelected] = useState<MembershipRequest | null>(null);
 
@@ -20,13 +102,34 @@ export default function MembershipRequestsPage() {
 		return <div className="p-6 text-red-500">Failed to load requests.</div>;
 	}
 
-	const requests = data.data;
-
 	return (
-		<div className="p-6 space-y-6 relative">
+		<div className="p-6 relative">
 			<h1 className="text-2xl font-semibold">Membership Requests</h1>
 
 			{/* TABLE */}
+			<div className="pt-4">
+				<ul className="flex text-xs">
+					<li
+						onClick={() => handleStatusSelection("approved")}
+						className={`px-4 py-1 rounded-sm border-b-0 border cursor-pointer border-zinc-200 ${selectedStatus === "approved" && `bg-gray-100`}`}
+					>
+						Approved
+					</li>
+					<li
+						onClick={() => handleStatusSelection("rejected")}
+						className={`px-4 py-1 rounded-sm border-b-0 border cursor-pointer border-zinc-200 ${selectedStatus === "rejected" && `bg-gray-100`}`}
+					>
+						Rejected
+					</li>
+					<li
+						onClick={() => handleStatusSelection("pending")}
+						className={`px-4 py-1 rounded-sm border-b-0 border cursor-pointer border-zinc-200 ${selectedStatus === "pending" && `bg-gray-100`}`}
+					>
+						Pending
+					</li>
+				</ul>
+			</div>
+
 			<div className="overflow-x-auto rounded-md border border-zinc-200">
 				<table className="min-w-full text-xs">
 					<thead className="bg-gray-100 text-left">
@@ -94,241 +197,498 @@ export default function MembershipRequestsPage() {
 				</table>
 			</div>
 
-			{/* MODAL */}
 			{selected && (
-				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-					<div className="w-175 max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-2xl p-6 space-y-6">
-						<div className="flex justify-between items-center">
-							<h2 className="text-xl font-semibold">
-								Request Details
-							</h2>
+				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+					<div className="w-275 max-h-[90vh] bg-white rounded-2xl shadow-[0_25px_70px_rgba(0,0,0,0.25)] overflow-hidden flex flex-col">
+						{/* Header */}
+						<div className="sticky top-0 z-20 bg-linear-to-r from-zinc-900 to-zinc-800 text-white px-8 py-6 flex items-center justify-between">
+							<div className="flex items-center gap-5">
+								<div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center text-xl font-semibold">
+									{selected.identity.first_name.charAt(0)}
+									{selected.identity.last_name.charAt(0)}
+								</div>
+
+								<div>
+									<h2 className="text-xl font-semibold">
+										{selected.identity.first_name}{" "}
+										{selected.identity.last_name}
+									</h2>
+									<p className="text-sm text-zinc-300">
+										{selected.identity.email}
+									</p>
+									<p className="text-sm text-zinc-400">
+										{selected.location.city},{" "}
+										{selected.location.province}
+									</p>
+								</div>
+							</div>
+
+							<div className="flex items-center gap-4">
+								<span
+									className={`px-4 py-1 rounded-full text-xs font-medium capitalize ${
+										selected.review.status === "approved"
+											? "bg-green-500/20 text-green-300"
+											: selected.review.status ===
+												  "rejected"
+												? "bg-red-500/20 text-red-300"
+												: "bg-yellow-500/20 text-yellow-300"
+									}`}
+								>
+									{selected.review.status}
+								</span>
+							</div>
+						</div>
+
+						{/* Compact Content */}
+						<div className="flex-1 overflow-y-auto p-8 grid grid-cols-4 gap-10 text-xs">
+							{/* Identity */}
+							<div className="space-y-3">
+								<h3 className="font-semibold text-zinc-800">
+									Identity
+								</h3>
+
+								<div className="space-y-1">
+									<p className="text-zinc-400">Phone</p>
+									<p className="font-medium text-zinc-900">
+										{selected.identity.phone}
+									</p>
+								</div>
+
+								<div className="space-y-1">
+									<p className="text-zinc-400">Birthdate</p>
+									<p className="font-medium text-zinc-900">
+										{new Date(
+											selected.identity.birthdate,
+										).toLocaleDateString()}
+									</p>
+								</div>
+
+								<div className="space-y-1">
+									<p className="text-zinc-400">Gender</p>
+									<p className="font-medium text-zinc-900 capitalize">
+										{selected.identity.gender}
+									</p>
+								</div>
+							</div>
+
+							{/* Location */}
+							<div className="space-y-3">
+								<h3 className="font-semibold text-zinc-800">
+									Location
+								</h3>
+
+								<div className="space-y-1">
+									<p className="text-zinc-400">Country</p>
+									<p className="font-medium text-zinc-900">
+										{selected.location.country}
+									</p>
+								</div>
+
+								<div className="space-y-1">
+									<p className="text-zinc-400">Barangay</p>
+									<p className="font-medium text-zinc-900">
+										{selected.location.barangay}
+									</p>
+								</div>
+
+								<div className="space-y-1">
+									<p className="text-zinc-400">
+										Location Confirmation
+									</p>
+									<span
+										className={`inline-block px-2 py-1 rounded text-[10px] font-medium ${
+											selected.location
+												.location_confirmation
+												? "bg-green-100 text-green-700"
+												: "bg-red-100 text-red-700"
+										}`}
+									>
+										{selected.location.location_confirmation
+											? "Confirmed"
+											: "Not Confirmed"}
+									</span>
+								</div>
+							</div>
+
+							{/* Training */}
+							<div className="space-y-3">
+								<h3 className="font-semibold text-zinc-800">
+									Training
+								</h3>
+
+								<div className="space-y-1">
+									<p className="text-zinc-400">
+										Training Types
+									</p>
+									<p className="font-medium text-zinc-900">
+										{selected.training.training_types.join(
+											", ",
+										)}
+									</p>
+								</div>
+
+								<div className="space-y-1">
+									<p className="text-zinc-400">
+										Experience Level
+									</p>
+									<p className="font-medium text-zinc-900">
+										{selected.training.experience_level ??
+											"N/A"}
+									</p>
+								</div>
+
+								<div className="space-y-1">
+									<p className="text-zinc-400">
+										Years Running
+									</p>
+									<p className="font-medium text-zinc-900">
+										{selected.training.years_running} yrs
+									</p>
+								</div>
+
+								<div className="space-y-1">
+									<p className="text-zinc-400">
+										Weekly Distance
+									</p>
+									<p className="font-medium text-zinc-900">
+										{selected.training.weekly_distance_km}{" "}
+										km
+									</p>
+								</div>
+
+								<div className="space-y-1">
+									<p className="text-zinc-400">
+										Average Run Pace
+									</p>
+									<p className="font-medium text-zinc-900">
+										{selected.training.average_run_pace}
+									</p>
+								</div>
+
+								<div className="space-y-1">
+									<p className="text-zinc-400">
+										Preferred Run Time
+									</p>
+									<p className="font-medium text-zinc-900 capitalize">
+										{selected.training.preferred_run_time ??
+											"N/A"}
+									</p>
+								</div>
+
+								<div className="space-y-1">
+									<p className="text-zinc-400">Goals</p>
+									<p className="font-medium text-zinc-900">
+										{selected.training.goals}
+									</p>
+								</div>
+							</div>
+
+							{/* Health */}
+							<div className="space-y-3">
+								<h3 className="font-semibold text-zinc-800">
+									Health
+								</h3>
+
+								<div className="space-y-1">
+									<p className="text-zinc-400">
+										Emergency Contact
+									</p>
+									<p className="font-medium text-zinc-900">
+										{selected.health.emergency_contact_name}
+									</p>
+								</div>
+
+								<div className="space-y-1">
+									<p className="text-zinc-400">
+										Emergency Phone
+									</p>
+									<p className="font-medium text-zinc-900">
+										{
+											selected.health
+												.emergency_contact_phone
+										}
+									</p>
+								</div>
+
+								<div className="space-y-1">
+									<p className="text-zinc-400">
+										Medical Conditions
+									</p>
+									<p className="font-medium text-zinc-900">
+										{selected.health.medical_conditions ||
+											"None"}
+									</p>
+								</div>
+
+								<div className="space-y-1">
+									<p className="text-zinc-400">
+										Fitness Acknowledgment
+									</p>
+									<span
+										className={`inline-block px-2 py-1 rounded text-[10px] font-medium ${
+											selected.health
+												.fitness_acknowledgment
+												? "bg-green-100 text-green-700"
+												: "bg-red-100 text-red-700"
+										}`}
+									>
+										{selected.health.fitness_acknowledgment
+											? "Confirmed"
+											: "Not Confirmed"}
+									</span>
+								</div>
+							</div>
+
+							{/* Community Platforms */}
+							<div className="space-y-3">
+								<h3 className="font-semibold text-zinc-800">
+									Community Platforms
+								</h3>
+
+								<div className="space-y-1">
+									<p className="text-zinc-400">
+										FB Group Joined
+									</p>
+									<span
+										className={`inline-block px-2 py-1 rounded text-[10px] font-medium ${
+											selected.community_platforms
+												.fb_group_joined
+												? "bg-green-100 text-green-700"
+												: "bg-red-100 text-red-700"
+										}`}
+									>
+										{selected.community_platforms
+											.fb_group_joined
+											? "Yes"
+											: "No"}
+									</span>
+								</div>
+
+								<div className="space-y-1">
+									<p className="text-zinc-400">
+										Community Chat Joined
+									</p>
+									<span
+										className={`inline-block px-2 py-1 rounded text-[10px] font-medium ${
+											selected.community_platforms
+												.community_chat_joined
+												? "bg-green-100 text-green-700"
+												: "bg-red-100 text-red-700"
+										}`}
+									>
+										{selected.community_platforms
+											.community_chat_joined
+											? "Yes"
+											: "No"}
+									</span>
+								</div>
+
+								<div className="space-y-1">
+									<p className="text-zinc-400">
+										Other Platforms
+									</p>
+									<p className="font-medium text-zinc-900">
+										{selected.community_platforms.platforms_joined.join(
+											", ",
+										)}
+									</p>
+								</div>
+
+								<div className="space-y-1">
+									<p className="text-zinc-400">
+										Facebook Profile Name
+									</p>
+									<p className="font-medium text-zinc-900">
+										{
+											selected.community_platforms
+												.facebook_profile_name
+										}
+									</p>
+								</div>
+
+								<div className="space-y-1">
+									<p className="text-zinc-400">
+										Messenger Name
+									</p>
+									<p className="font-medium text-zinc-900">
+										{
+											selected.community_platforms
+												.messenger_name
+										}
+									</p>
+								</div>
+							</div>
+
+							{/* Culture Fit */}
+							<div className="col-span-2 space-y-3">
+								<h3 className="font-semibold text-zinc-800">
+									Culture Fit
+								</h3>
+
+								<div className="space-y-1">
+									<p className="text-zinc-400">
+										How did you hear about us?
+									</p>
+									<p className="font-medium text-zinc-900">
+										{selected.culture_fit.how_did_you_hear}
+									</p>
+								</div>
+
+								<div className="space-y-1">
+									<p className="text-zinc-400">Motivation</p>
+									<p className="font-medium text-zinc-900">
+										{selected.culture_fit.motivation}
+									</p>
+								</div>
+							</div>
+
+							{/* Membership Expectations */}
+							<div className="space-y-3">
+								<h3 className="font-semibold text-zinc-800">
+									Membership Expectations
+								</h3>
+
+								<span
+									className={`inline-block px-2 py-1 rounded text-[10px] font-medium mr-2 ${
+										selected.membership_expectations
+											.attendance_commitment
+											? "bg-green-100 text-green-700"
+											: "bg-red-100 text-red-700"
+									}`}
+								>
+									Attendance Commitment
+								</span>
+
+								<span
+									className={`inline-block px-2 py-1 rounded text-[10px] font-medium mr-2 ${
+										selected.membership_expectations
+											.activity_expectation
+											? "bg-green-100 text-green-700"
+											: "bg-red-100 text-red-700"
+									}`}
+								>
+									Activity Expectation
+								</span>
+
+								<span
+									className={`inline-block px-2 py-1 rounded text-[10px] font-medium ${
+										selected.membership_expectations
+											.community_behavior
+											? "bg-green-100 text-green-700"
+											: "bg-red-100 text-red-700"
+									}`}
+								>
+									Community Behavior
+								</span>
+							</div>
+
+							{/* Waiver & Agreement */}
+							<div className="space-y-3">
+								<h3 className="font-semibold text-zinc-800">
+									Waiver & Agreement
+								</h3>
+
+								<span
+									className={`inline-block px-2 py-1 rounded text-[10px] font-medium mr-2 ${
+										selected.waiver.agreed_to_rules
+											? "bg-green-100 text-green-700"
+											: "bg-red-100 text-red-700"
+									}`}
+								>
+									Agreed to Rules
+								</span>
+
+								<span
+									className={`inline-block px-2 py-1 rounded text-[10px] font-medium mr-2 ${
+										selected.waiver.safety_commitment
+											? "bg-green-100 text-green-700"
+											: "bg-red-100 text-red-700"
+									}`}
+								>
+									Safety Commitment
+								</span>
+
+								<span
+									className={`inline-block px-2 py-1 rounded text-[10px] font-medium ${
+										selected.waiver.media_consent
+											? "bg-green-100 text-green-700"
+											: "bg-red-100 text-red-700"
+									}`}
+								>
+									Media Consent
+								</span>
+							</div>
+
+							{/* Review */}
+							<div className="col-span-2 space-y-3">
+								<h3 className="font-semibold text-zinc-800">
+									Review
+								</h3>
+
+								<div className="space-y-1">
+									<p className="text-zinc-400">Reviewed By</p>
+									<p className="font-medium text-zinc-900">
+										{selected.review.reviewed_by ??
+											"Not yet reviewed"}
+									</p>
+								</div>
+
+								<div className="space-y-1">
+									<p className="text-zinc-400">Admin Notes</p>
+									<p className="font-medium text-zinc-900">
+										{selected.review.admin_notes ?? "None"}
+									</p>
+								</div>
+
+								<div className="space-y-1">
+									<p className="text-zinc-400">Reviewed At</p>
+									<p className="font-medium text-zinc-900">
+										{selected.review.reviewed_at ?? "N/A"}
+									</p>
+								</div>
+
+								<div className="space-y-1">
+									<p className="text-zinc-400">Agreed At</p>
+									<p className="font-medium text-zinc-900">
+										{selected.review.agreed_at ?? "N/A"}
+									</p>
+								</div>
+							</div>
+						</div>
+
+						{/* Footer Actions */}
+						<div className="sticky bottom-0 z-20 flex justify-end gap-4 px-8 py-6 border-t border-zinc-200 bg-zinc-50">
 							<button
 								onClick={() => setSelected(null)}
-								className="text-gray-500"
+								className="px-6 py-2 border border-zinc-300 rounded-md text-zinc-700 hover:bg-zinc-100 transition"
 							>
 								Close
 							</button>
-						</div>
 
-						{/* Identity */}
-						<section className="border-b pb-4 space-y-1">
-							<h3 className="font-semibold">Identity</h3>
-							<p>
-								Name: {selected.identity.first_name}{" "}
-								{selected.identity.last_name}
-							</p>
-							<p>Email: {selected.identity.email}</p>
-							<p>Phone: {selected.identity.phone}</p>
-							<p>
-								Birthdate:{" "}
-								{new Date(
-									selected.identity.birthdate,
-								).toLocaleDateString()}
-							</p>
-							<p className="capitalize">
-								Gender: {selected.identity.gender}
-							</p>
-						</section>
-
-						{/* Location */}
-						<section className="border-b pb-4 space-y-1">
-							<h3 className="font-semibold">Location</h3>
-							<p>Country: {selected.location.country}</p>
-							<p>
-								{selected.location.city},{" "}
-								{selected.location.province}
-							</p>
-							<p>Barangay: {selected.location.barangay}</p>
-							<p>
-								Location Confirmed:{" "}
-								{selected.location.location_confirmation
-									? "Yes"
-									: "No"}
-							</p>
-						</section>
-
-						{/* Training */}
-						<section className="border-b pb-4 space-y-1">
-							<h3 className="font-semibold">Training</h3>
-							<p>
-								Training Types:{" "}
-								{selected.training.training_types.join(", ")}
-							</p>
-							<p>
-								Experience Level:{" "}
-								{selected.training.experience_level ?? "N/A"}
-							</p>
-							<p>
-								Years Running: {selected.training.years_running}
-							</p>
-							<p>
-								Weekly Distance:{" "}
-								{selected.training.weekly_distance_km} km
-							</p>
-							<p>
-								Average Pace:{" "}
-								{selected.training.average_run_pace}
-							</p>
-							<p>
-								Preferred Time:{" "}
-								{selected.training.preferred_run_time ?? "N/A"}
-							</p>
-							<p>Goals: {selected.training.goals}</p>
-						</section>
-
-						{/* Community Platforms */}
-						<section className="border-b pb-4 space-y-1">
-							<h3 className="font-semibold">
-								Community Platforms
-							</h3>
-							<p>
-								FB Group Joined:{" "}
-								{selected.community_platforms.fb_group_joined
-									? "Yes"
-									: "No"}
-							</p>
-							<p>
-								Community Chat Joined:{" "}
-								{selected.community_platforms
-									.community_chat_joined
-									? "Yes"
-									: "No"}
-							</p>
-							<p>
-								Other Platforms:{" "}
-								{selected.community_platforms.platforms_joined.join(
-									", ",
-								)}
-							</p>
-							<p>
-								Facebook Name:{" "}
-								{
-									selected.community_platforms
-										.facebook_profile_name
+							<button
+								onClick={() =>
+									handleMembershipRequestAction(
+										selected.id.toString(),
+										"reject",
+									)
 								}
-							</p>
-							<p>
-								Messenger Name:{" "}
-								{selected.community_platforms.messenger_name}
-							</p>
-						</section>
+								className="px-6 py-2 border border-red-300 text-red-700 rounded-md hover:bg-red-50 transition"
+							>
+								Reject
+							</button>
 
-						{/* Health */}
-						<section className="border-b pb-4 space-y-1">
-							<h3 className="font-semibold">Health & Safety</h3>
-							<p>
-								Emergency Contact:{" "}
-								{selected.health.emergency_contact_name}
-							</p>
-							<p>
-								Emergency Phone:{" "}
-								{selected.health.emergency_contact_phone}
-							</p>
-							<p>
-								Medical Conditions:{" "}
-								{selected.health.medical_conditions || "None"}
-							</p>
-							<p>
-								Fitness Acknowledgment:{" "}
-								{selected.health.fitness_acknowledgment
-									? "Yes"
-									: "No"}
-							</p>
-						</section>
-
-						{/* Expectations */}
-						<section className="border-b pb-4 space-y-1">
-							<h3 className="font-semibold">
-								Membership Expectations
-							</h3>
-							<p>
-								Attendance Commitment:{" "}
-								{selected.membership_expectations
-									.attendance_commitment
-									? "Yes"
-									: "No"}
-							</p>
-							<p>
-								Activity Expectation:{" "}
-								{selected.membership_expectations
-									.activity_expectation
-									? "Yes"
-									: "No"}
-							</p>
-							<p>
-								Community Behavior:{" "}
-								{selected.membership_expectations
-									.community_behavior
-									? "Yes"
-									: "No"}
-							</p>
-						</section>
-
-						{/* Culture Fit */}
-						<section className="border-b pb-4 space-y-1">
-							<h3 className="font-semibold">
-								Community / Culture Fit
-							</h3>
-							<p>
-								How they heard about us:{" "}
-								{selected.culture_fit.how_did_you_hear}
-							</p>
-							<p>Motivation: {selected.culture_fit.motivation}</p>
-						</section>
-
-						{/* Waiver */}
-						<section className="border-b pb-4 space-y-1">
-							<h3 className="font-semibold">
-								Waiver & Agreement
-							</h3>
-							<p>
-								Agreed to Rules:{" "}
-								{selected.waiver.agreed_to_rules ? "Yes" : "No"}
-							</p>
-							<p>
-								Safety Commitment:{" "}
-								{selected.waiver.safety_commitment
-									? "Yes"
-									: "No"}
-							</p>
-							<p>
-								Media Consent:{" "}
-								{selected.waiver.media_consent ? "Yes" : "No"}
-							</p>
-						</section>
-
-						{/* Review Info */}
-						<section className="space-y-2">
-							<h3 className="font-semibold">Review</h3>
-							<p>Status: {selected.review.status}</p>
-							<p>
-								Reviewed By:{" "}
-								{selected.review.reviewed_by ??
-									"Not yet reviewed"}
-							</p>
-							<p>
-								Reviewed At:{" "}
-								{selected.review.reviewed_at ?? "N/A"}
-							</p>
-							<p>
-								Admin Notes:{" "}
-								{selected.review.admin_notes ?? "None"}
-							</p>
-
-							<textarea
-								className="w-full border rounded p-2 text-sm"
-								placeholder="Admin notes..."
-							/>
-
-							<div className="flex gap-3 pt-2">
-								<button className="bg-green-600 text-white px-4 py-2 rounded">
-									Approve
-								</button>
-								<button className="bg-red-600 text-white px-4 py-2 rounded">
-									Reject
-								</button>
-							</div>
-						</section>
+							<button
+								onClick={() =>
+									handleMembershipRequestAction(
+										selected.id.toString(),
+										"approve",
+									)
+								}
+								className="px-6 py-2 bg-black text-white rounded-md hover:bg-zinc-800 transition"
+							>
+								Approve
+							</button>
+						</div>
 					</div>
 				</div>
 			)}
