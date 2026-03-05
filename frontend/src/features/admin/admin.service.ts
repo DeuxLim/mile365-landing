@@ -4,6 +4,9 @@ import type {
 	AdminLoginCredentials,
 	AdminUser,
 } from "./types/admin.types";
+import type { PaginatedResponse } from "./types/pagination.types";
+import type { MembershipRequest } from "@/features/membership/types/membership-request.types";
+import type { Member } from "./types/member.types";
 
 export const submitLoginCredentials = async (
 	credentials: AdminLoginCredentials,
@@ -21,13 +24,38 @@ export const getAuthenticatedAdmin = async (): Promise<AdminUser> => {
 	return response.data.user;
 };
 
-export const getMembershipRequests = async (page: number) => {
-	const response = await api.get(`/admin/membership-requests?page=${page}`);
+export const getMembershipRequests = async (
+	page: number,
+	options?: { status?: string; search?: string },
+): Promise<PaginatedResponse<MembershipRequest>> => {
+	const params = new URLSearchParams();
+	params.set("page", String(page));
+	if (options?.status && options.status.trim().length > 0) {
+		params.set("status", options.status.trim());
+	}
+	if (options?.search && options.search.trim().length > 0) {
+		params.set("search", options.search.trim());
+	}
+
+	const response = await api.get<PaginatedResponse<MembershipRequest>>(
+		`/admin/membership-requests?${params.toString()}`,
+	);
 	return response.data;
 };
 
-export const getMembers = async (page: number) => {
-	const response = await api.get(`/admin/members?page=${page}`);
+export const getMembers = async (
+	page: number,
+	search?: string,
+): Promise<PaginatedResponse<Member>> => {
+	const params = new URLSearchParams();
+	params.set("page", String(page));
+	if (search && search.trim().length > 0) {
+		params.set("search", search.trim());
+	}
+
+	const response = await api.get<PaginatedResponse<Member>>(
+		`/admin/members?${params.toString()}`,
+	);
 	return response.data;
 };
 
