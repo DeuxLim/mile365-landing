@@ -16,9 +16,11 @@ class MemberController extends Controller
         $this->memberService = $memberService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $members = $this->memberService->getAllMembers();
+        $members = $this->memberService->getAllMembers(
+            $request->string('search')->trim()->toString()
+        );
 
         return MemberResource::collection($members);
     }

@@ -23,11 +23,31 @@ class MembershipService
         return MembershipRequest::create($data);
     }
 
-    public function getAllRequests()
+    public function getAllRequests(?string $status = null, ?string $search = null)
     {
-        return MembershipRequest::query()
+        $query = MembershipRequest::query()
             ->latest()
-            ->paginate(10);
+            ->when(
+                filled($status),
+                fn($q) => $q->where('status', trim($status))
+            )
+            ->when(
+                filled($search),
+                function ($q) use ($search) {
+                    $term = '%' . str_replace('%', '\\%', trim($search)) . '%';
+
+                    $q->where(function ($sub) use ($term) {
+                        $sub->where('first_name', 'like', $term)
+                            ->orWhere('last_name', 'like', $term)
+                            ->orWhere('email', 'like', $term)
+                            ->orWhere('phone', 'like', $term)
+                            ->orWhere('city', 'like', $term)
+                            ->orWhere('province', 'like', $term);
+                    });
+                }
+            );
+
+        return $query->paginate(10);
     }
 
     public function approveRequest(int $id, int $adminId): MembershipRequest

@@ -32,9 +32,20 @@ class MembershipController extends Controller
         ], 201);
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $membershipRequests = $this->membershipService->getAllRequests();
+        $status = $request->string('status')->trim()->toString();
+        $allowedStatuses = ['pending', 'approved', 'rejected', 'waitlisted'];
+        if (!in_array($status, $allowedStatuses, true)) {
+            $status = null;
+        }
+
+        $search = $request->string('search')->trim()->toString();
+
+        $membershipRequests = $this->membershipService->getAllRequests(
+            $status,
+            $search
+        );
 
         return MembershipRequestResource::collection($membershipRequests);
     }
