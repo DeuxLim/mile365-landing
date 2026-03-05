@@ -58,6 +58,11 @@ class MembershipService
                 ->lockForUpdate()
                 ->firstOrFail();
 
+            // Idempotency: approving an already-approved request should be a no-op.
+            if ($request->status === 'approved') {
+                return $request;
+            }
+
             if ($request->status !== 'pending') {
                 throw ValidationException::withMessages([
                     'request' => 'Request already processed.'
@@ -67,7 +72,7 @@ class MembershipService
             // Prevent duplicate member (based on email for example)
             if (Member::where('email', $request->email)->exists()) {
                 throw ValidationException::withMessages([
-                    'email' => 'Member already exists.'
+                    'email' => 'Member already exists for this email.'
                 ]);
             }
 

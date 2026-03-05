@@ -14,8 +14,11 @@ class MembershipRequestSeeder extends Seeder
             ->count(50)
             ->create()
             ->each(function ($request) {
+                if ($request->status !== "approved") {
+                    return;
+                }
 
-                Member::create([
+                Member::firstOrCreate(['email' => $request->email], [
                     ...$request->only([
                         'first_name',
                         'last_name',
