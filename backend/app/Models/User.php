@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Arr;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -19,7 +20,9 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
+        'status',
         'email',
         'password',
     ];
@@ -50,5 +53,33 @@ class User extends Authenticatable
     public function roles()
     {
         return $this->belongsToMany(Role::class);
+    }
+
+    public function hasRole(string|array $roles): bool
+    {
+        $roleNames = Arr::wrap($roles);
+        $this->loadMissing('roles');
+
+        return $this->roles->contains(fn(Role $role) => in_array($role->name, $roleNames, true));
+    }
+
+    public function hasPermission(string|array $permissions): bool
+    {
+        $permissionNames = Arr::wrap($permissions);
+        $this->loadMissing('roles.permissions');
+
+        $userPermissions = $this->roles
+            ->flatMap(fn(Role $role) => $role->permissions)
+            ->pluck('name')
+            ->unique()
+            ->all();
+
+        foreach ($permissionNames as $permission) {
+            if (in_array($permission, $userPermissions, true)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
