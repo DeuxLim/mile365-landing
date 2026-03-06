@@ -75,7 +75,9 @@ export default function ProfileModal(props: Props) {
 				<div className="flex-1 overflow-y-auto p-8 grid grid-cols-4 gap-10 text-xs">
 					{/* Identity */}
 					<div className="space-y-3">
-						<h3 className="font-semibold text-zinc-800">Identity</h3>
+						<h3 className="font-semibold text-zinc-800">
+							Identity
+						</h3>
 
 						<div className="space-y-1">
 							<p className="text-zinc-400">Phone</p>
@@ -103,7 +105,9 @@ export default function ProfileModal(props: Props) {
 
 					{/* Location */}
 					<div className="space-y-3">
-						<h3 className="font-semibold text-zinc-800">Location</h3>
+						<h3 className="font-semibold text-zinc-800">
+							Location
+						</h3>
 
 						<div className="space-y-1">
 							<p className="text-zinc-400">Country</p>
@@ -139,12 +143,14 @@ export default function ProfileModal(props: Props) {
 
 					{/* Training */}
 					<div className="space-y-3">
-						<h3 className="font-semibold text-zinc-800">Training</h3>
+						<h3 className="font-semibold text-zinc-800">
+							Training
+						</h3>
 
 						<div className="space-y-1">
 							<p className="text-zinc-400">Training Types</p>
 							<p className="font-medium text-zinc-900">
-								{profile.training.training_types.join(", ")}
+								{profile.training.training_types?.join(", ")}
 							</p>
 						</div>
 
@@ -277,7 +283,7 @@ export default function ProfileModal(props: Props) {
 						<div className="space-y-1">
 							<p className="text-zinc-400">Other Platforms</p>
 							<p className="font-medium text-zinc-900">
-								{profile.community_platforms.platforms_joined.join(
+								{profile.community_platforms.platforms_joined?.join(
 									", ",
 								)}
 							</p>
@@ -410,37 +416,34 @@ export default function ProfileModal(props: Props) {
 								Review
 							</h3>
 
-								<div className="space-y-1">
-									<p className="text-zinc-400">Reviewed By</p>
-									<p className="font-medium text-zinc-900">
-										{props.profile.review.reviewed_by ??
-											"Not yet reviewed"}
-									</p>
-								</div>
+							<div className="space-y-1">
+								<p className="text-zinc-400">Reviewed By</p>
+								<p className="font-medium text-zinc-900">
+									{props.profile.review.reviewed_by ??
+										"Not yet reviewed"}
+								</p>
+							</div>
 
-								<div className="space-y-1">
-									<p className="text-zinc-400">Admin Notes</p>
-									<p className="font-medium text-zinc-900">
-										{props.profile.review.admin_notes ??
-											"None"}
-									</p>
-								</div>
+							<div className="space-y-1">
+								<p className="text-zinc-400">Admin Notes</p>
+								<p className="font-medium text-zinc-900">
+									{props.profile.review.admin_notes ?? "None"}
+								</p>
+							</div>
 
-								<div className="space-y-1">
-									<p className="text-zinc-400">Reviewed At</p>
-									<p className="font-medium text-zinc-900">
-										{props.profile.review.reviewed_at ??
-											"N/A"}
-									</p>
-								</div>
+							<div className="space-y-1">
+								<p className="text-zinc-400">Reviewed At</p>
+								<p className="font-medium text-zinc-900">
+									{props.profile.review.reviewed_at ?? "N/A"}
+								</p>
+							</div>
 
-								<div className="space-y-1">
-									<p className="text-zinc-400">Agreed At</p>
-									<p className="font-medium text-zinc-900">
-										{props.profile.review.agreed_at ??
-											"N/A"}
-									</p>
-								</div>
+							<div className="space-y-1">
+								<p className="text-zinc-400">Agreed At</p>
+								<p className="font-medium text-zinc-900">
+									{props.profile.review.agreed_at ?? "N/A"}
+								</p>
+							</div>
 						</div>
 					) : null}
 				</div>
@@ -454,7 +457,8 @@ export default function ProfileModal(props: Props) {
 						Close
 					</button>
 
-					{props.variant === "review" ? (
+					{props.variant === "review" &&
+					props.profile.review.status === "pending" ? (
 						<>
 							<button
 								onClick={props.onReject}
