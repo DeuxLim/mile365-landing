@@ -134,27 +134,19 @@ export default function MembershipRequestsPage() {
 	const approveMutation = useMutation({
 		mutationFn: approveMembershipRequest,
 
-		onSuccess: (response) => {
-			console.log(response.message);
-
+		onSuccess: () => {
 			queryClient.invalidateQueries({
 				queryKey: ["membershipRequests"],
 			});
 
-			toast.success("Request approved!");
+			toast.success("Request approved");
 			setSelected(null);
 		},
 
 		onError: (error: AxiosError<LaravelValidationError>) => {
-			if (error.response?.status === 422) {
-				console.log("Validation error:", error.response.data.errors);
-			} else if (error.response?.status === 404) {
-				console.log("Request not found.");
-			} else {
-				console.log("Unexpected error.");
-			}
-
-			toast.error("Unexpected error occured.");
+			toast.error(
+				error.response?.data.message ?? "Unexpected error occured.",
+			);
 		},
 	});
 
@@ -166,13 +158,14 @@ export default function MembershipRequestsPage() {
 				queryKey: ["membershipRequests"],
 			});
 
+			toast.success("Request rejected");
 			setSelected(null);
 		},
 
 		onError: (error: AxiosError<LaravelValidationError>) => {
-			if (error.response?.status === 422) {
-				console.log(error.response.data.errors);
-			}
+			toast.error(
+				error.response?.data.message ?? "Unexpected error occured.",
+			);
 		},
 	});
 
