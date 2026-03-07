@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\MembershipController;
+use App\Http\Controllers\Api\MembershipRequestController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\MemberController;
 /* use App\Mail\MembershipRequestSubmitted;
@@ -19,16 +19,16 @@ Route::get('/mailable', function () {
     return new  MembershipRequestSubmitted($membershipRequest);
 }); */
 
-Route::post('/membership-requests', [MembershipController::class, 'store']);
+Route::post('/membership-requests', [MembershipRequestController::class, 'store']);
 Route::post('/admin/login', [AuthController::class, 'login'])->middleware('throttle:10,1');
 Route::middleware(['auth:sanctum', 'can:admin_access'])->prefix('admin')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
     /* Membership Requests */
-    Route::get('/membership-requests', [MembershipController::class, 'index'])->middleware('can:membership_requests_view');
-    Route::patch('/membership-requests/{id}/approve', [MembershipController::class, 'approve'])->middleware('can:membership_requests_review');
-    Route::patch('/membership-requests/{id}/reject', [MembershipController::class, 'reject'])->middleware('can:membership_requests_review');
+    Route::get('/membership-requests', [MembershipRequestController::class, 'index'])->middleware('can:membership_requests_view');
+    Route::patch('/membership-requests/{id}/approve', [MembershipRequestController::class, 'approve'])->middleware('can:membership_requests_review');
+    Route::patch('/membership-requests/{id}/reject', [MembershipRequestController::class, 'reject'])->middleware('can:membership_requests_review');
 
     /* Members */
     Route::get('/members', [MemberController::class, 'index'])->middleware('can:members_view');
