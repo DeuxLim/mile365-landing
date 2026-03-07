@@ -7,20 +7,26 @@ use App\Models\Member;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
-class MembershipService
+class MembershipRequestService
 {
-    public function submitApplication(array $data): MembershipRequest
+    public function submitApplication(array $data): MembershipRequest | null
     {
-        // set default status
-        $data['status'] = 'pending';
+        $membershipRequest = null;
 
-        // if user agreed to rules, set timestamp
-        if (!empty($data['agreed_to_rules'])) {
-            $data['agreed_at'] = now();
-        }
+        DB::transaction(function () {
+            // set default status
+            $data['status'] = 'pending';
 
-        // create record
-        return MembershipRequest::create($data);
+            // if user agreed to rules, set timestamp
+            if (!empty($data['agreed_to_rules'])) {
+                $data['agreed_at'] = now();
+            }
+
+            // create record
+            $membershipRequest = MembershipRequest::create($data);
+        });
+
+        return $membershipRequest;
     }
 
     public function getAllRequests(?string $status = null, ?string $search = null)
