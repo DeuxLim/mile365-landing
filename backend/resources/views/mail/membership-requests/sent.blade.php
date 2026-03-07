@@ -1,40 +1,38 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-    <meta charset="UTF-8">
-    <title>Membership Request Received</title>
-</head>
-
 <body style="font-family: Arial, sans-serif; line-height: 1.6;">
 
-    <h2>New Membership Request</h2>
+    <h2>Membership Request Received</h2>
 
     <p>
-        A new membership request has been submitted to <strong>MILE 365</strong>.
+        Hello {{ ($membershipRequest->first_name ?? '') . ' ' . ($membershipRequest->last_name ?? '') }},
     </p>
 
     <p>
-        Please review the applicant details below:
+        Thank you for submitting your membership request to <strong>MILE 365</strong>.
+    </p>
+
+    <p>
+        Your request has been successfully received and is currently being reviewed by the club administrators.
+        You will be notified once your application has been approved or rejected.
+    </p>
+
+    <p>
+        <strong>Submitted Details:</strong>
     </p>
 
     <ul>
-        <li><strong>Name:</strong> {{ $membershipRequest->first_name . '' . $membershipRequest->last_name ?? 'N/A' }}
-        </li>
+        <li><strong>Name:</strong> {{ ($membershipRequest->first_name ?? 'N/A') . ' ' . ($membershipRequest->last_name ?? '') }}</li>
         <li><strong>Email:</strong> {{ $membershipRequest->email ?? 'N/A' }}</li>
     </ul>
 
     <p>
-        Please log in to the admin panel to approve or reject this request.
+        If you have any questions, feel free to reply to this email.
     </p>
 
     <br>
 
     <p>
         Regards,<br>
-        MILE 365 AUTOMATION
+        <strong>MILE 365</strong>
     </p>
 
 </body>
-
-</html>
