@@ -1,0 +1,41 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.*
+
+# Node
+node_modules
+npm-debug.log
+yarn-error.log
+pnpm-lock.yaml
+
+# Frontend build
+frontend/dist
+frontend/.next
+frontend/.vite
+
+# Laravel
+backend/vendor
+backend/node_modules
+backend/storage/*.key
+backend/storage/logs/*
+backend/storage/framework/cache/*
+backend/storage/framework/sessions/*
+backend/storage/framework/views/*
+
+# Laravel cache
+backend/bootstrap/cache/*.php
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
+
+# Misc
+coverage
+*.sqlite
