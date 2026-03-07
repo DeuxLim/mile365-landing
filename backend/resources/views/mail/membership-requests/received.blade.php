@@ -19,7 +19,8 @@
     </p>
 
     <ul>
-        <li><strong>Name:</strong> {{ $membershipRequest->first_name . '' . $membershipRequest->last_name ?? 'N/A' }}
+        <li><strong>Name:</strong>
+            {{ trim(($membershipRequest->first_name ?? '') . ' ' . ($membershipRequest->last_name ?? '')) ?: 'N/A' }}
         </li>
         <li><strong>Email:</strong> {{ $membershipRequest->email ?? 'N/A' }}</li>
     </ul>
