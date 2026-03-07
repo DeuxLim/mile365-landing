@@ -16,23 +16,23 @@ class AdminSeeder extends Seeder
     {
         $admins = [
             [
-                'first_name' => 'Kenneth',
-                'last_name' => 'Marcelino',
-                'email' => 'kennethmarcelino@gmail.com',
+                'first_name' => 'TestAdmin1',
+                'last_name' => 'Local',
+                'email' => 'limdeux27@gmail.com',
                 'password' => 'Test123123!',
                 'status' => 'active',
             ],
             [
-                'first_name' => 'Daniel',
-                'last_name' => 'Banawa',
-                'email' => 'danielbanawa@gmail.com',
+                'first_name' => 'TestAdmin2',
+                'last_name' => 'Local',
+                'email' => 'limdeux27@gmail.com',
                 'password' => 'Test123123!',
                 'status' => 'active',
             ],
             [
-                'first_name' => 'Conrad',
-                'last_name' => 'Cruz',
-                'email' => 'conradcruz@gmail.com',
+                'first_name' => 'TestAdmin3',
+                'last_name' => 'Local',
+                'email' => 'limdeux27@gmail.com',
                 'password' => 'Test123123!',
                 'status' => 'active',
             ],
