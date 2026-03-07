@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\MembershipRequestReceived;
 use App\Models\MembershipRequest;
 use App\Models\Member;
 use Illuminate\Support\Facades\DB;
@@ -13,7 +14,7 @@ class MembershipRequestService
     {
         $membershipRequest = null;
 
-        DB::transaction(function () {
+        DB::transaction(function () use (&$membershipRequest, $data) {
             // set default status
             $data['status'] = 'pending';
 
@@ -24,6 +25,8 @@ class MembershipRequestService
 
             // create record
             $membershipRequest = MembershipRequest::create($data);
+
+            event(new MembershipRequestReceived(($membershipRequest)));
         });
 
         return $membershipRequest;
