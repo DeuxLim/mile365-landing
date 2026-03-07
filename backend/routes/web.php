@@ -19,7 +19,6 @@ Route::get('/mailable', function () {
     return new  MembershipRequestSubmitted($membershipRequest);
 }); */
 
-Route::post('/membership-requests', [MembershipRequestController::class, 'store']);
 Route::post('/admin/login', [AuthController::class, 'login'])->middleware('throttle:10,1');
 Route::middleware(['auth:sanctum', 'can:admin_access'])->prefix('admin')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
