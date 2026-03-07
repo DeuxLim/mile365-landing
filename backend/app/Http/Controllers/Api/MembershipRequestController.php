@@ -4,23 +4,23 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\_MembershipRequest;
-use App\Services\MembershipService;
+use App\Services\MembershipRequestService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Resources\MembershipRequestResource;
 
-class MembershipController extends Controller
+class MembershipRequestController extends Controller
 {
-    protected MembershipService $membershipService;
+    protected MembershipRequestService $membershipRequestService;
 
-    public function __construct(MembershipService $membershipService)
+    public function __construct(MembershipRequestService $membershipRequestService)
     {
-        $this->membershipService = $membershipService;
+        $this->membershipRequestService = $membershipRequestService;
     }
 
     public function store(_MembershipRequest $request): JsonResponse
     {
-        $membership = $this->membershipService
+        $membership = $this->membershipRequestService
             ->submitApplication($request->validated());
 
         return response()->json([
@@ -42,7 +42,7 @@ class MembershipController extends Controller
 
         $search = $request->string('search')->trim()->toString();
 
-        $membershipRequests = $this->membershipService->getAllRequests(
+        $membershipRequests = $this->membershipRequestService->getAllRequests(
             $status,
             $search
         );
@@ -58,7 +58,7 @@ class MembershipController extends Controller
             abort(401, 'Unauthenticated.');
         }
 
-        $membership = $this->membershipService->approveRequest(
+        $membership = $this->membershipRequestService->approveRequest(
             $id,
             $admin->id
         );
@@ -81,7 +81,7 @@ class MembershipController extends Controller
             'admin_notes' => ['nullable', 'string', 'max:1000'],
         ]);
 
-        $membership = $this->membershipService->rejectRequest(
+        $membership = $this->membershipRequestService->rejectRequest(
             $id,
             $admin->id,
             $validated['admin_notes'] ?? null
