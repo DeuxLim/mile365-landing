@@ -23,6 +23,6 @@ class SendRequestorMembershipRequestConfirmation implements ShouldQueueAfterComm
      */
     public function handle(MembershipRequestReceived $event): void
     {
-        Mail::to("limdeux27@gmail.com")->send(new MembershipRequestSent($event->membershipRequest));
+        Mail::to($event->membershipRequest->email)->send(new MembershipRequestSent($event->membershipRequest));
     }
 }

@@ -28,8 +28,15 @@ class MembershipRequestReceived extends Mailable
      */
     public function envelope(): Envelope
     {
+        $name = trim(
+            ($this->membershipRequest->first_name ?? '') . ' ' . ($this->membershipRequest->last_name ?? '')
+        );
+
         return new Envelope(
             subject: 'MILE 365 - New Membership Request Received',
+            replyTo: filled($this->membershipRequest->email)
+                ? [new Address($this->membershipRequest->email, $name ?: null)]
+                : [],
         );
     }
 
