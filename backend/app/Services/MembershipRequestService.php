@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Events\MembershipRequestApproved;
 use App\Events\MembershipRequestReceived;
+use App\Events\MembershipRequestRejected;
 use App\Models\MembershipRequest;
 use App\Models\Member;
 use Illuminate\Support\Facades\DB;
@@ -141,7 +143,12 @@ class MembershipRequestService
                 'joined_at' => now(),
             ]);
 
-            return $request->fresh(); // return updated version
+
+            $membershipRequest = $request->fresh();
+
+            event(new MembershipRequestApproved($membershipRequest));
+
+            return $membershipRequest; // return updated version
         });
     }
 
@@ -165,6 +172,10 @@ class MembershipRequestService
                 'reviewed_at' => now(),
                 'admin_notes' => $notes,
             ]);
+
+            $membershipRequest = $request->fresh();
+
+            event(new MembershipRequestRejected($membershipRequest));
 
             return $request->fresh();
         });
