@@ -58,9 +58,14 @@ class MembershipRequestController extends Controller
             abort(401, 'Unauthenticated.');
         }
 
+        $validated = $request->validate([
+            'admin_notes' => ['nullable', 'string', 'max:1000'],
+        ]);
+
         $membership = $this->membershipRequestService->approveRequest(
             $id,
-            $admin->id
+            $admin->id,
+            $validated['admin_notes'] ?? null
         );
 
         return response()->json([

@@ -61,9 +61,9 @@ class MembershipRequestService
         return $query->paginate(10);
     }
 
-    public function approveRequest(int $id, int $adminId): MembershipRequest
+    public function approveRequest(int $id, int $adminId, ?string $notes = null): MembershipRequest
     {
-        return DB::transaction(function () use ($id, $adminId) {
+        return DB::transaction(function () use ($id, $adminId, $notes) {
             // Lock row to prevent race condition
             $request = MembershipRequest::whereKey($id)
                 ->lockForUpdate()
@@ -92,6 +92,7 @@ class MembershipRequestService
                 'status' => 'approved',
                 'reviewed_by' => $adminId,
                 'reviewed_at' => now(),
+                'admin_notes' => $notes
             ]);
 
             // Create member

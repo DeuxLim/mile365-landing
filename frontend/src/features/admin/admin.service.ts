@@ -64,16 +64,32 @@ export const logoutAdmin = async () => {
 	return response.data;
 };
 
-export const approveMembershipRequest = async (membershipRequestId: string) => {
+export const approveMembershipRequest = async ({
+	membershipRequestId,
+	adminNote,
+}: {
+	membershipRequestId: string;
+	adminNote: string;
+}) => {
 	const response = await api.patch(
 		`/admin/membership-requests/${membershipRequestId}/approve`,
+		{ admin_notes: adminNote },
 	);
+
 	return response.data;
 };
 
-export const rejectMembershipRequest = async (membershipRequestId: string) => {
+export const rejectMembershipRequest = async ({
+	membershipRequestId,
+	adminNote,
+}: {
+	membershipRequestId: string;
+	adminNote: string;
+}) => {
 	const response = await api.patch(
 		`/admin/membership-requests/${membershipRequestId}/reject`,
+		{ admin_notes: adminNote },
 	);
+
 	return response.data;
 };

@@ -25,6 +25,7 @@ export default function MembershipRequestsPage() {
 	const [searchInput, setSearchInput] = useState("");
 	const [search, setSearch] = useState("");
 	const [selected, setSelected] = useState<MembershipRequest | null>(null);
+	const [adminNote, setAdminNote] = useState("");
 	const searchDebounceRef = useRef<ReturnType<
 		typeof window.setTimeout
 	> | null>(null);
@@ -87,7 +88,10 @@ export default function MembershipRequestsPage() {
 				header: "Actions",
 				renderCell: (req) => (
 					<button
-						onClick={() => setSelected(req)}
+						onClick={() => {
+							setAdminNote("");
+							setSelected(req);
+						}}
 						className="text-blue-600 hover:underline"
 					>
 						View
@@ -141,6 +145,7 @@ export default function MembershipRequestsPage() {
 
 			toast.success("Request approved");
 			setSelected(null);
+			setAdminNote("");
 		},
 
 		onError: (error: AxiosError<LaravelValidationError>) => {
@@ -160,6 +165,7 @@ export default function MembershipRequestsPage() {
 
 			toast.success("Request rejected");
 			setSelected(null);
+			setAdminNote("");
 		},
 
 		onError: (error: AxiosError<LaravelValidationError>) => {
@@ -172,12 +178,20 @@ export default function MembershipRequestsPage() {
 	const handleMembershipRequestAction = useCallback(
 		(id: string, action: string) => {
 			if (action === "approve") {
-				approveMutation.mutate(id);
-			} else if (action === "reject") {
-				rejectMutation.mutate(id);
+				approveMutation.mutate({
+					membershipRequestId: id,
+					adminNote,
+				});
+			}
+
+			if (action === "reject") {
+				rejectMutation.mutate({
+					membershipRequestId: id,
+					adminNote,
+				});
 			}
 		},
-		[approveMutation, rejectMutation],
+		[approveMutation, rejectMutation, adminNote],
 	);
 
 	const handleStatusSelection = useCallback((status: string) => {
@@ -272,6 +286,7 @@ export default function MembershipRequestsPage() {
 							"approve",
 						)
 					}
+					setAdminNote={setAdminNote}
 				/>
 			) : null}
 		</div>

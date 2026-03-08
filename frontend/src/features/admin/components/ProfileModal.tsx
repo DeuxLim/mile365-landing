@@ -13,6 +13,7 @@ type ReviewProps = {
 	onClose: () => void;
 	onApprove: () => void;
 	onReject: () => void;
+	setAdminNote: (note: string) => void;
 };
 
 type Props = ReadonlyProps | ReviewProps;
@@ -449,32 +450,47 @@ export default function ProfileModal(props: Props) {
 				</div>
 
 				{/* Footer Actions */}
-				<div className="sticky bottom-0 z-20 flex justify-end gap-4 px-8 py-6 border-t border-zinc-200 bg-zinc-50">
-					<button
-						onClick={onClose}
-						className="px-6 py-2 border border-zinc-300 rounded-md text-zinc-700 hover:bg-zinc-100 transition"
-					>
-						Close
-					</button>
-
+				<div className="sticky bottom-0 z-20 flex justify-between gap-4 px-8 py-6 border-t border-zinc-200 bg-zinc-50">
 					{props.variant === "review" &&
 					props.profile.review.status === "pending" ? (
-						<>
-							<button
-								onClick={props.onReject}
-								className="px-6 py-2 border border-red-300 text-red-700 rounded-md hover:bg-red-50 transition"
-							>
-								Reject
-							</button>
-
-							<button
-								onClick={props.onApprove}
-								className="px-6 py-2 bg-black text-white rounded-md hover:bg-zinc-800 transition"
-							>
-								Approve
-							</button>
-						</>
+						<div>
+							<input
+								type="text"
+								className="border-zinc-400 border rounded-md h-full px-4 overflow-x-auto w-96"
+								placeholder="Type admin note here..."
+								onChange={(e) =>
+									props.setAdminNote(e.target.value)
+								}
+							/>
+						</div>
 					) : null}
+					<div className="flex justify-end gap-4 w-full">
+						<button
+							onClick={onClose}
+							className="px-6 py-2 border border-zinc-400 rounded-md text-zinc-700 hover:bg-zinc-100 transition"
+						>
+							Close
+						</button>
+
+						{props.variant === "review" &&
+						props.profile.review.status === "pending" ? (
+							<>
+								<button
+									onClick={props.onReject}
+									className="px-6 py-2 border border-red-300 text-red-700 rounded-md hover:bg-red-50 transition"
+								>
+									Reject
+								</button>
+
+								<button
+									onClick={props.onApprove}
+									className="px-6 py-2 bg-black text-white rounded-md hover:bg-zinc-800 transition"
+								>
+									Approve
+								</button>
+							</>
+						) : null}
+					</div>
 				</div>
 			</div>
 		</div>
