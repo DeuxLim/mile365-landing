@@ -5,8 +5,9 @@
 	"main": "index.js",
 	"scripts": {
 		"backend": "cd backend && php artisan serve",
-		"queue": "cd backend && php artisan queue:work",
+		"queue": "cd backend && php artisan queue:listen",
 		"frontend": "cd frontend && npm run dev",
+		"migrate_seed": "cd backend && php artisan migrate:fresh --seed",
 		"dev": "concurrently -n backend,queue,frontend -c blue,magenta,green \"npm run backend\" \"npm run queue\" \"npm run frontend\""
 	},
 	"repository": {
