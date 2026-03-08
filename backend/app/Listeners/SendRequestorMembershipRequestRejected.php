@@ -2,13 +2,13 @@
 
 namespace App\Listeners;
 
-use App\Events\MembershipRequestReceived;
-use App\Mail\MembershipRequestSent;
+use App\Events\MembershipRequestRejected;
+use App\Mail\MembershipRequestRejected as MailMembershipRequestRejected;
 use Illuminate\Contracts\Queue\ShouldQueueAfterCommit;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
-class SendRequestorMembershipRequestConfirmation implements ShouldQueueAfterCommit
+class SendRequestorMembershipRequestRejected implements ShouldQueueAfterCommit
 {
     /**
      * Create the event listener.
@@ -21,12 +21,12 @@ class SendRequestorMembershipRequestConfirmation implements ShouldQueueAfterComm
     /**
      * Handle the event.
      */
-    public function handle(MembershipRequestReceived $event): void
+    public function handle(MembershipRequestRejected $event): void
     {
         $recipient = app()->environment('local') ? config('mail.admin_email') : $event->membershipRequest->email;
 
         if ($recipient) {
-            Mail::to($event->membershipRequest->email)->send(new MembershipRequestSent($event->membershipRequest));
+            Mail::to($recipient)->send(new MailMembershipRequestRejected($event->membershipRequest));
         }
     }
 }

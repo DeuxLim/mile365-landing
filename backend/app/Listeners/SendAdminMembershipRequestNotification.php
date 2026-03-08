@@ -6,6 +6,7 @@ use App\Events\MembershipRequestReceived;
 use App\Mail\MembershipRequestReceived as MailMembershipRequestReceived;
 use App\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueueAfterCommit;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
@@ -28,8 +29,13 @@ class SendAdminMembershipRequestNotification implements ShouldQueueAfterCommit
             $query->whereIn('name', ['super_admin', 'club_admin']);
         })->pluck('email');
 
-        if ($adminEmails->isNotEmpty()) {
-            Mail::to($adminEmails)->send(new MailMembershipRequestReceived($event->membershipRequest));
+        $recipients = app()->environment('local')
+            ? collect([config('mail.admin_email')])
+            : $adminEmails;
+
+        if ($recipients->isNotEmpty()) {
+            Mail::to($recipients->all())
+                ->send(new MailMembershipRequestReceived($event->membershipRequest));
         }
     }
 }
