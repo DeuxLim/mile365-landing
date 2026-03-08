@@ -1,13 +1,11 @@
 import { Link, NavLink, useNavigate } from "react-router";
-import { MdOutlineGroupAdd } from "react-icons/md";
 import { useMutation } from "@tanstack/react-query";
 import { logoutAdmin } from "../admin.service";
 import { useAuthenticatedAdmin } from "@/hooks/useAuthenticatedAdmin";
 import { RiLogoutBoxLine } from "react-icons/ri";
-import { MdOutlineGroups3 } from "react-icons/md";
-import { MdOutlineDashboard } from "react-icons/md";
 import { RiMenu3Fill } from "react-icons/ri";
 import { useState } from "react";
+import adminNav from "../admin-nav";
 
 export default function Sidebar() {
 	const navigate = useNavigate();
@@ -34,7 +32,7 @@ export default function Sidebar() {
 					>
 						{sidebarOpen && (
 							<h1 className="font-heading font-bold text-left text-xl text-nowrap">
-								MILE 365
+								MILE 365 RUN CLUB
 							</h1>
 						)}
 						<button
@@ -47,12 +45,14 @@ export default function Sidebar() {
 					</Link>
 
 					<div className="w-full flex flex-col gap-8">
-						<ul className="w-full">
-							<li className="flex flex-col gap-2">
-								<ul className="flex flex-col gap-2">
-									<li>
+						<ul className="w-full flex flex-col gap-2">
+							{adminNav.slice(0, 1).map((item) => {
+								const Icon = item.icon;
+
+								return (
+									<li key={item.path}>
 										<NavLink
-											to="dashboard"
+											to={item.path}
 											className={({ isActive }) =>
 												`flex items-center gap-2 px-4 py-2 rounded-md transition ${
 													isActive
@@ -61,16 +61,16 @@ export default function Sidebar() {
 												}`
 											}
 										>
-											<MdOutlineDashboard className="text-xl shrink-0" />
+											<Icon className="text-xl shrink-0" />
 											{sidebarOpen && (
 												<div className="text-sm">
-													Dashboard
+													{item.label}
 												</div>
 											)}
 										</NavLink>
 									</li>
-								</ul>
-							</li>
+								);
+							})}
 						</ul>
 
 						{/* CLUB MANAGEMENT */}
@@ -82,44 +82,31 @@ export default function Sidebar() {
 									</p>
 								)}
 								<ul className="flex flex-col gap-2">
-									<li>
-										<NavLink
-											to="membership-requests"
-											className={({ isActive }) =>
-												`flex items-center gap-2 px-4 py-2 rounded-md transition ${
-													isActive
-														? "bg-zinc-100 font-normal"
-														: "hover:bg-zinc-100"
-												}`
-											}
-										>
-											<MdOutlineGroupAdd className="text-xl shrink-0" />
-											{sidebarOpen && (
-												<div className="text-sm">
-													Requests
-												</div>
-											)}
-										</NavLink>
-									</li>
-									<li>
-										<NavLink
-											to="members"
-											className={({ isActive }) =>
-												`flex items-center gap-2 px-4 py-2 rounded-md transition ${
-													isActive
-														? "bg-zinc-100 font-normal"
-														: "hover:bg-zinc-100"
-												}`
-											}
-										>
-											<MdOutlineGroups3 className="text-xl shrink-0" />
-											{sidebarOpen && (
-												<div className="text-sm">
-													Members
-												</div>
-											)}
-										</NavLink>
-									</li>
+									{adminNav.slice(1).map((item) => {
+										const Icon = item.icon;
+
+										return (
+											<li key={item.path}>
+												<NavLink
+													to={item.path}
+													className={({ isActive }) =>
+														`flex items-center gap-2 px-4 py-2 rounded-md transition ${
+															isActive
+																? "bg-zinc-100 font-normal"
+																: "hover:bg-zinc-100"
+														}`
+													}
+												>
+													<Icon className="text-xl shrink-0" />
+													{sidebarOpen && (
+														<div className="text-sm">
+															{item.label}
+														</div>
+													)}
+												</NavLink>
+											</li>
+										);
+									})}
 								</ul>
 							</li>
 						</ul>
