@@ -79,7 +79,6 @@ class MembershipRequestFactory extends Factory
             'motivation' => fake()->paragraph(),
 
             'agreed_to_rules' => true,
-            'agreed_at' => now(),
             'safety_commitment' => true,
             'media_consent' => fake()->boolean(70),
 
@@ -88,7 +87,6 @@ class MembershipRequestFactory extends Factory
                 'approved',
                 'rejected'
             ]),
-            'reviewed_at' => now(),
         ];
     }
 }

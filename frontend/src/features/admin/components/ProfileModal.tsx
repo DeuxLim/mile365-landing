@@ -1,5 +1,6 @@
 import type { Member } from "@/features/admin/types/member.types";
 import type { MembershipRequest } from "@/features/membership/types/membership-request.types";
+import { formatDate } from "@/utils/utils";
 
 type ReadonlyProps = {
 	variant: "readonly";
@@ -435,7 +436,12 @@ export default function ProfileModal(props: Props) {
 							<div className="space-y-1">
 								<p className="text-zinc-400">Reviewed At</p>
 								<p className="font-medium text-zinc-900">
-									{props.profile.review.reviewed_at ?? "N/A"}
+									{props.profile.review.reviewed_at
+										? formatDate(
+												props.profile.review
+													.reviewed_at,
+											)
+										: "N/A"}
 								</p>
 							</div>
 

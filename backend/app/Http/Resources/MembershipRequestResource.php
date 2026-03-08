@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -123,6 +124,7 @@ class MembershipRequestResource extends JsonResource
 				'status' => $this->status,
 				'submitted_at' => $this->created_at,
 				'reviewed_at' => $this->reviewed_at,
+				'reviewed_by' => optional(User::find($this->reviewed_by))->first_name,
 				'admin_notes' => $this->admin_notes,
 			],
 		];
