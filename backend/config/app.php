@@ -123,4 +123,9 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /**
+     * Project Specific Config
+     */
+    'messenger_link' => env('MESSENGER_LINK'),
+    'facebook_page' => env('FACEBOOK_PAGE_LINK')
 ];

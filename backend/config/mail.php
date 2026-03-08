@@ -115,4 +115,9 @@ return [
         'name' => env('MAIL_FROM_NAME', 'MILE 365'),
     ],
 
+    /**
+     * Project Specific Config
+     */
+    'admin_email' => env('ADMIN_EMAIL'),
+    'contact_email' => env('RUNCLUB_EMAIL'),
 ];
