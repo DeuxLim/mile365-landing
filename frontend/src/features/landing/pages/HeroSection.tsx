@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import DecryptedText from "../../../components/imports/DecryptedText";
 import hero_video from "../../../assets/videos/hero_video.mp4";
+import hero_image from "@/assets/photos/hero_fallback.jpg";
 
 export default function HeroSection() {
 	const videoRef = useRef<HTMLVideoElement | null>(null);
 	const [progress, setProgress] = useState<number>(0);
 	const [barVisible, setBarVisible] = useState(false);
+	const [videoReady, setVideoReady] = useState(false);
 
 	useEffect(() => {
 		const t = setTimeout(() => setBarVisible(true), 400);
@@ -32,6 +34,15 @@ export default function HeroSection() {
 			data-theme="dark"
 			className="relative min-h-screen overflow-hidden snap-start"
 		>
+			{/* Fallback Image while video loads */}
+			{!videoReady && (
+				<img
+					src={hero_image}
+					alt="Run club hero"
+					className="absolute inset-0 w-full h-full object-cover"
+				/>
+			)}
+
 			{/* Background Video */}
 			<video
 				ref={videoRef}
@@ -39,6 +50,9 @@ export default function HeroSection() {
 				muted
 				loop
 				playsInline
+				preload="auto"
+				poster={hero_image}
+				onCanPlay={() => setVideoReady(true)}
 				className="absolute inset-0 w-full h-full object-cover md:scale-125 scale-125"
 			>
 				<source src={hero_video} type="video/mp4" />
