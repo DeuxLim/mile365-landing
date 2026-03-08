@@ -7,6 +7,7 @@ import PaginatedDataTable, {
 	type TableColumn,
 } from "@/features/admin/components/PaginatedDataTable";
 import ProfileModal from "@/features/admin/components/ProfileModal";
+import PaginatedCardList from "../components/PaginatedCardsList";
 
 export default function MembersPage() {
 	const [page, setPage] = useState(1);
@@ -113,40 +114,92 @@ export default function MembersPage() {
 		<div className="p-6 relative">
 			<div className="flex items-center justify-between gap-4">
 				<h1 className="text-2xl font-semibold">Members</h1>
-				<div className="flex items-center gap-2">
-					<input
-						value={searchInput}
-						onChange={(e) => scheduleSearch(e.target.value)}
-						placeholder="Search members..."
-						className="w-64 px-3 py-2 text-xs rounded-md border border-zinc-200 bg-white focus:outline-none focus:ring-2 focus:ring-zinc-300"
-					/>
-					{searchInput.length > 0 ? (
-						<button
-							onClick={() => scheduleSearch("")}
-							className="px-3 py-2 text-xs rounded-md border border-zinc-200 bg-white hover:bg-gray-50"
-						>
-							Clear
-						</button>
-					) : null}
-				</div>
 			</div>
 
 			{/* TABLE */}
 			<div className="pt-4"></div>
 
-			<PaginatedDataTable
-				columns={columns}
-				rows={members}
-				getRowKey={(member) => member.id}
-				emptyMessage={
-					search.length > 0 ? "No matching members." : "No members."
-				}
-				pagination={{
-					page,
-					lastPage: meta.last_page,
-					onPageChange: setPage,
-				}}
-			/>
+			{/* DESKTOP TABLE */}
+			<div className="hidden md:block">
+				<PaginatedDataTable
+					columns={columns}
+					rows={members}
+					getRowKey={(member) => member.id}
+					emptyMessage={
+						search.length > 0
+							? "No matching members."
+							: "No members."
+					}
+					search={{
+						value: searchInput,
+						onChange: scheduleSearch,
+						onClear: () => scheduleSearch(""),
+						placeholder: "Search members...",
+					}}
+					pagination={{
+						page,
+						lastPage: meta.last_page,
+						onPageChange: setPage,
+					}}
+				/>
+			</div>
+
+			{/* MOBILE CARD LIST */}
+			<div className="md:hidden">
+				<PaginatedCardList
+					rows={members}
+					getRowKey={(member) => member.id}
+					emptyMessage={
+						search.length > 0
+							? "No matching members."
+							: "No members."
+					}
+					search={{
+						value: searchInput,
+						onChange: scheduleSearch,
+						onClear: () => scheduleSearch(""),
+						placeholder: "Search members...",
+					}}
+					pagination={{
+						page,
+						lastPage: meta.last_page,
+						onPageChange: setPage,
+					}}
+					renderCard={(member) => (
+						<div className="border border-zinc-200 rounded-md p-4 bg-white space-y-2">
+							<div className="font-medium">
+								{member.identity.first_name}{" "}
+								{member.identity.last_name}
+							</div>
+
+							<div className="text-sm text-zinc-600">
+								Age: {getAge(member.identity.birthdate)}
+							</div>
+
+							<div className="text-sm text-zinc-600">
+								{member.location.city},{" "}
+								{member.location.province}
+							</div>
+
+							<div className="text-sm text-zinc-600">
+								Years Running: {member.training.years_running}
+							</div>
+
+							<div className="text-sm text-zinc-600">
+								Medical:{" "}
+								{member.health.medical_conditions || "None"}
+							</div>
+
+							<button
+								onClick={() => setSelected(member)}
+								className="text-blue-600 text-sm hover:underline"
+							>
+								View
+							</button>
+						</div>
+					)}
+				/>
+			</div>
 
 			{selected ? (
 				<ProfileModal

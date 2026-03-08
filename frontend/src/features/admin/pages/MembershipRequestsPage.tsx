@@ -16,6 +16,8 @@ import PaginatedDataTable, {
 	type TableColumn,
 } from "@/features/admin/components/PaginatedDataTable";
 import ProfileModal from "@/features/admin/components/ProfileModal";
+import PaginatedCardList from "../components/PaginatedCardsList";
+import MembershipRequestCard from "../components/MembershipRequestCard";
 
 export default function MembershipRequestsPage() {
 	const queryClient = useQueryClient();
@@ -211,49 +213,7 @@ export default function MembershipRequestsPage() {
 
 	return (
 		<div className="p-6 relative">
-			<div className="flex items-center justify-between gap-4">
-				<h1 className="text-2xl font-semibold">Membership Requests</h1>
-				<div className="flex items-center gap-2">
-					<input
-						value={searchInput}
-						onChange={(e) => scheduleSearch(e.target.value)}
-						placeholder="Search requests..."
-						className="w-64 px-3 py-2 text-xs rounded-md border border-zinc-200 bg-white focus:outline-none focus:ring-2 focus:ring-zinc-300"
-					/>
-					{searchInput.length > 0 ? (
-						<button
-							onClick={() => scheduleSearch("")}
-							className="px-3 py-2 text-xs rounded-md border border-zinc-200 bg-white hover:bg-gray-50"
-						>
-							Clear
-						</button>
-					) : null}
-				</div>
-			</div>
-
-			{/* TABLE */}
-			<div className="pt-4">
-				<ul className="flex text-xs">
-					<li
-						onClick={() => handleStatusSelection("approved")}
-						className={`px-4 py-1 rounded-sm border-b-0 border cursor-pointer border-zinc-200 ${selectedStatus === "approved" && `bg-gray-100`}`}
-					>
-						Approved
-					</li>
-					<li
-						onClick={() => handleStatusSelection("rejected")}
-						className={`px-4 py-1 rounded-sm border-b-0 border cursor-pointer border-zinc-200 ${selectedStatus === "rejected" && `bg-gray-100`}`}
-					>
-						Rejected
-					</li>
-					<li
-						onClick={() => handleStatusSelection("pending")}
-						className={`px-4 py-1 rounded-sm border-b-0 border cursor-pointer border-zinc-200 ${selectedStatus === "pending" && `bg-gray-100`}`}
-					>
-						Pending
-					</li>
-				</ul>
-			</div>
+			<h1 className="text-2xl font-semibold">Membership Requests</h1>
 
 			<PaginatedDataTable
 				columns={columns}
@@ -262,12 +222,63 @@ export default function MembershipRequestsPage() {
 				emptyMessage={
 					search.length > 0 ? "No matching requests." : "No requests."
 				}
+				search={{
+					value: searchInput,
+					onChange: scheduleSearch,
+					onClear: () => scheduleSearch(""),
+					placeholder: "Search requests...",
+				}}
+				tabs={{
+					value: selectedStatus,
+					onChange: handleStatusSelection,
+					tabs: [
+						{ label: "Approved", value: "approved" },
+						{ label: "Rejected", value: "rejected" },
+						{ label: "Pending", value: "pending" },
+					],
+				}}
 				pagination={{
 					page,
 					lastPage: meta.last_page,
 					onPageChange: setPage,
 				}}
 			/>
+
+			<div className="md:hidden my-4">
+				<PaginatedCardList
+					rows={data.data}
+					getRowKey={(req) => req.id}
+					renderCard={(req) => (
+						<MembershipRequestCard
+							request={req}
+							onView={() => {
+								setAdminNote("");
+								setSelected(req);
+							}}
+						/>
+					)}
+					search={{
+						value: searchInput,
+						onChange: scheduleSearch,
+						onClear: () => scheduleSearch(""),
+						placeholder: "Search requests...",
+					}}
+					tabs={{
+						value: selectedStatus,
+						onChange: handleStatusSelection,
+						tabs: [
+							{ label: "Approved", value: "approved" },
+							{ label: "Rejected", value: "rejected" },
+							{ label: "Pending", value: "pending" },
+						],
+					}}
+					pagination={{
+						page,
+						lastPage: meta.last_page,
+						onPageChange: setPage,
+					}}
+				/>
+			</div>
 
 			{selected ? (
 				<ProfileModal

@@ -42,11 +42,11 @@ export default function ProfileModal(props: Props) {
 
 	return (
 		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-			<div className="w-275 max-h-[90vh] bg-white rounded-2xl shadow-[0_25px_70px_rgba(0,0,0,0.25)] overflow-hidden flex flex-col">
+			<div className="w-full max-w-6xl max-h-[90vh] bg-white rounded-2xl shadow-[0_25px_70px_rgba(0,0,0,0.25)] overflow-hidden flex flex-col">
 				{/* Header */}
-				<div className="sticky top-0 z-20 bg-linear-to-r from-zinc-900 to-zinc-800 text-white px-8 py-6 flex items-center justify-between">
+				<div className="sticky top-0 z-20 bg-linear-to-r from-zinc-900 to-zinc-800 text-white px-4 md:px-8 py-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
 					<div className="flex items-center gap-5">
-						<div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center text-xl font-semibold">
+						<div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-white/20 flex items-center justify-center text-lg md:text-xl font-semibold">
 							{profile.identity.first_name.charAt(0)}
 							{profile.identity.last_name.charAt(0)}
 						</div>
@@ -74,7 +74,7 @@ export default function ProfileModal(props: Props) {
 				</div>
 
 				{/* Compact Content */}
-				<div className="flex-1 overflow-y-auto p-8 grid grid-cols-4 gap-10 text-xs">
+				<div className="flex-1 overflow-y-auto p-4 md:p-8 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 md:gap-10 text-xs md:text-sm">
 					{/* Identity */}
 					<div className="space-y-3">
 						<h3 className="font-semibold text-zinc-800">
@@ -312,7 +312,7 @@ export default function ProfileModal(props: Props) {
 					</div>
 
 					{/* Culture Fit */}
-					<div className="col-span-2 space-y-3">
+					<div className="md:col-span-2 space-y-3">
 						<h3 className="font-semibold text-zinc-800">
 							Culture Fit
 						</h3>
@@ -413,7 +413,7 @@ export default function ProfileModal(props: Props) {
 
 					{/* Review */}
 					{props.variant === "review" ? (
-						<div className="col-span-2 space-y-3">
+						<div className="md:col-span-2 space-y-3">
 							<h3 className="font-semibold text-zinc-800">
 								Review
 							</h3>
@@ -456,13 +456,13 @@ export default function ProfileModal(props: Props) {
 				</div>
 
 				{/* Footer Actions */}
-				<div className="sticky bottom-0 z-20 flex justify-between gap-4 px-8 py-6 border-t border-zinc-200 bg-zinc-50">
+				<div className="sticky bottom-0 z-20 flex flex-col md:flex-row md:items-center md:justify-between gap-4 px-4 md:px-8 py-4 md:py-6 border-t border-zinc-200 bg-zinc-50">
 					{props.variant === "review" &&
 					props.profile.review.status === "pending" ? (
 						<div>
 							<input
 								type="text"
-								className="border-zinc-400 border rounded-md h-full px-4 overflow-x-auto w-96"
+								className="border-zinc-400 border rounded-md px-4 py-2 w-full md:w-96"
 								placeholder="Type admin note here..."
 								onChange={(e) =>
 									props.setAdminNote(e.target.value)
@@ -470,10 +470,10 @@ export default function ProfileModal(props: Props) {
 							/>
 						</div>
 					) : null}
-					<div className="flex justify-end gap-4 w-full">
+					<div className="flex flex-col-reverse md:flex-row md:justify-end gap-3 md:gap-4 w-full">
 						<button
 							onClick={onClose}
-							className="px-6 py-2 border border-zinc-400 rounded-md text-zinc-700 hover:bg-zinc-100 transition"
+							className="px-4 md:px-6 py-2 border border-zinc-400 rounded-md text-zinc-700 hover:bg-zinc-100 transition w-full md:w-auto"
 						>
 							Close
 						</button>
@@ -483,14 +483,14 @@ export default function ProfileModal(props: Props) {
 							<>
 								<button
 									onClick={props.onReject}
-									className="px-6 py-2 border border-red-300 text-red-700 rounded-md hover:bg-red-50 transition"
+									className="px-4 md:px-6 py-2 border border-red-300 text-red-700 rounded-md hover:bg-red-50 transition w-full md:w-auto"
 								>
 									Reject
 								</button>
 
 								<button
 									onClick={props.onApprove}
-									className="px-6 py-2 bg-black text-white rounded-md hover:bg-zinc-800 transition"
+									className="px-4 md:px-6 py-2 bg-black text-white rounded-md hover:bg-zinc-800 transition w-full md:w-auto"
 								>
 									Approve
 								</button>
