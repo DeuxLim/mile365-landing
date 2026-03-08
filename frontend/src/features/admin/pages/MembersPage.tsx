@@ -116,9 +116,6 @@ export default function MembersPage() {
 				<h1 className="text-2xl font-semibold">Members</h1>
 			</div>
 
-			{/* TABLE */}
-			<div className="pt-4"></div>
-
 			{/* DESKTOP TABLE */}
 			<div className="hidden md:block">
 				<PaginatedDataTable
