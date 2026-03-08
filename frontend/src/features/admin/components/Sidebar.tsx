@@ -5,6 +5,7 @@ import { logoutAdmin } from "../admin.service";
 import { useAuthenticatedAdmin } from "@/hooks/useAuthenticatedAdmin";
 import { RiLogoutBoxLine } from "react-icons/ri";
 import { MdOutlineGroups3 } from "react-icons/md";
+import { MdOutlineDashboard } from "react-icons/md";
 
 export default function Sidebar() {
 	const navigate = useNavigate();
@@ -28,6 +29,28 @@ export default function Sidebar() {
 				</Link>
 
 				<div className="w-full flex flex-col gap-8">
+					<ul className="w-full">
+						<li className="flex flex-col gap-2">
+							<ul className="flex flex-col gap-2">
+								<li>
+									<NavLink
+										to="dashboard"
+										className={({ isActive }) =>
+											`flex items-center gap-2 px-4 py-2 rounded-md transition ${
+												isActive
+													? "bg-zinc-100 font-normal"
+													: "hover:bg-zinc-100"
+											}`
+										}
+									>
+										<MdOutlineDashboard className="text-xl" />
+										<div className="text-sm">Dashboard</div>
+									</NavLink>
+								</li>
+							</ul>
+						</li>
+					</ul>
+
 					{/* CLUB MANAGEMENT */}
 					<ul className="w-full">
 						<li className="flex flex-col gap-2">
