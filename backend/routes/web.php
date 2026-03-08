@@ -4,7 +4,12 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\MembershipRequestController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\MemberController;
-/* use App\Mail\MembershipRequestSubmitted;
+
+// Testing Route For Emails
+/* use App\Mail\MembershipRequestApproved;
+use App\Mail\MembershipRequestReceived;
+use App\Mail\MembershipRequestRejected;
+use App\Mail\MembershipRequestSent;
 use App\Models\MembershipRequest;
 
 Route::get('/letsgo365', function () {
@@ -16,7 +21,7 @@ Route::get('/letsgo365', function () {
 Route::get('/mailable', function () {
     $membershipRequest = MembershipRequest::find(1);
 
-    return new  MembershipRequestSubmitted($membershipRequest);
+    return new MembershipRequestRejected($membershipRequest);
 }); */
 
 Route::post('/admin/login', [AuthController::class, 'login'])->middleware('throttle:10,1');
