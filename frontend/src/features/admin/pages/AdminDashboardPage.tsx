@@ -142,7 +142,15 @@ const announcements = [
 	},
 ];
 
-const upcomingRuns = [
+// define a union of the allowed run types so we can index the badge map safely
+export type RunType = "Race" | "Speed" | "Easy" | "Long";
+
+const upcomingRuns: {
+	name: string;
+	date: string;
+	time: string;
+	type: RunType;
+}[] = [
 	{ name: "Baguio Marathon", date: "Mar 10", time: "4:00 AM", type: "Race" },
 	{
 		name: "Track / Speed Session",
@@ -153,7 +161,7 @@ const upcomingRuns = [
 	{ name: "Easy Run", date: "Mar 14", time: "6:00 AM", type: "Easy" },
 ];
 
-const runTypeBadge = {
+const runTypeBadge: Record<RunType, string> = {
 	Race: "bg-rose-500/10 text-rose-600",
 	Speed: "bg-sky-500/10 text-sky-600",
 	Easy: "bg-emerald-500/10 text-emerald-600",
