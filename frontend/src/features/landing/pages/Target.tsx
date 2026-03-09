@@ -1,3 +1,4 @@
+import { getImage } from "@/services/cloudinary.service";
 import { motion } from "framer-motion";
 
 const levels = [
@@ -12,12 +13,22 @@ export default function Target() {
 		<motion.section
 			id="target"
 			data-theme="dark"
-			className="relative min-h-screen bg-black text-white flex items-center snap-start overflow-hidden px-5 sm:px-8 md:px-16 lg:px-24 py-16 md:py-0"
+			className="relative min-h-screen text-white flex items-center snap-start overflow-hidden px-5 sm:px-8 md:px-16 lg:px-24 py-16 md:py-0"
 			initial={{ opacity: 0 }}
 			whileInView={{ opacity: 1 }}
 			viewport={{ amount: 0.3, once: true }}
 			transition={{ duration: 0.7, ease: "easeOut" }}
 		>
+			<div className="absolute inset-0 -z-10">
+				<img
+					src={getImage("whyjoin-background")}
+					className="absolute inset-0 w-full h-full object-cover"
+				/>
+
+				{/* Dark overlay */}
+				<div className="absolute inset-0 bg-black/85" />
+			</div>
+
 			<div className="relative max-w-6xl mx-auto w-full flex flex-col justify-center space-y-12 md:space-y-16">
 				{/* Header */}
 				<div className="space-y-5 md:space-y-6">
