@@ -1,3 +1,4 @@
+import { getImage } from "@/services/cloudinary.service";
 import { motion } from "framer-motion";
 
 export default function About() {
@@ -45,10 +46,78 @@ export default function About() {
 				</div>
 
 				{/* RIGHT VISUAL */}
-				<div className="relative w-full h-56 sm:h-64 md:h-[420px] lg:h-[500px] rounded-2xl overflow-hidden bg-neutral-200 shadow-sm">
-					<div className="absolute inset-0 flex items-center justify-center text-neutral-400 text-[10px] sm:text-xs uppercase tracking-widest">
-						Group Run Image
-					</div>
+				<div className="flex flex-col gap-4 relative">
+					{/* Vertical accent line */}
+					<div className="absolute left-0 top-0 bottom-0 w-px bg-linear-to-b from-transparent via-neutral-300 to-transparent" />
+
+					{[
+						{
+							key: "about1",
+							label: "01",
+							caption: "2025 Year-end run",
+						},
+						{
+							key: "about2",
+							label: "02",
+							caption: "Friday Easy Run",
+						},
+						{
+							key: "about3",
+							label: "03",
+							caption: "Nlex Tabang LSD",
+						},
+					].map(({ key, label, caption }, i) => (
+						<div
+							key={key}
+							className="group relative pl-6"
+							style={{
+								marginLeft:
+									i === 1
+										? "1.5rem"
+										: i === 2
+											? "0.75rem"
+											: "0",
+								transition: "transform 0.4s ease",
+							}}
+						>
+							{/* Number label */}
+							<span
+								className="absolute left-0 top-3 text-[10px] font-mono text-neutral-400 tracking-widest"
+								style={{
+									writingMode: "vertical-lr",
+									transform: "rotate(180deg)",
+									lineHeight: 1,
+								}}
+							>
+								{label}
+							</span>
+
+							{/* Image card */}
+							<div
+								className="relative w-full rounded-lg overflow-hidden shadow-md"
+								style={{
+									height: "clamp(180px, 20vw, 240px)",
+									transform: `translateY(${i % 2 === 0 ? "0px" : "8px"})`,
+								}}
+							>
+								<img
+									className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+									src={getImage(key)}
+									alt={caption}
+								/>
+
+								{/* Dark overlay on hover */}
+								<div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-500" />
+
+								{/* Caption reveal */}
+								<div className="absolute bottom-0 left-0 right-0 px-4 py-3 translate-y-full group-hover:translate-y-0 transition-transform duration-400 ease-out bg-linear-to-t from-black/70 to-transparent">
+									<p className="text-white text-xs font-medium tracking-widest uppercase">
+										{caption}
+									</p>
+								</div>
+							</div>
+						</div>
+					))}
 				</div>
 			</motion.div>
 		</section>
