@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Http\Resources\MemberResource;
-use App\Models\Member;
 use App\Services\MemberService;
 use Illuminate\Http\Request;
 
