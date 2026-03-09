@@ -10,11 +10,12 @@ class GalleryController extends Controller
 {
     public function index()
     {
-        $result = Cloudinary::adminApi()->assets([
-            'type' => 'upload',
-            'asset_folder' => 'clubgallery',
-            'max_results' => 30
-        ]);
+        $result = Cloudinary::adminApi()->assetsByAssetFolder(
+            'Mile365RunClub/LandingPage/Images/clubgallery',
+            [
+                'max_results' => 30
+            ]
+        );
 
         return response()->json($result['resources']);
     }
