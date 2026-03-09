@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import DecryptedText from "../../../components/imports/DecryptedText";
-import hero_video from "../../../assets/videos/hero_video.mp4";
-import hero_image from "@/assets/photos/hero_fallback.jpg";
+import { getImage, getVideo } from "@/services/cloudinary.service";
 
 export default function HeroSection() {
 	const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -37,7 +36,7 @@ export default function HeroSection() {
 			{/* Fallback Image while video loads */}
 			{!videoReady && (
 				<img
-					src={hero_image}
+					src={getImage("hero_image")}
 					alt="Run club hero"
 					className="absolute inset-0 w-full h-full object-cover"
 				/>
@@ -51,11 +50,11 @@ export default function HeroSection() {
 				loop
 				playsInline
 				preload="auto"
-				poster={hero_image}
+				poster={getImage("hero_image")}
 				onCanPlay={() => setVideoReady(true)}
 				className="absolute inset-0 w-full h-full object-cover md:scale-125 scale-125"
 			>
-				<source src={hero_video} type="video/mp4" />
+				<source src={getVideo("hero_video")} type="video/mp4" />
 			</video>
 
 			{/* Overlay */}
