@@ -63,7 +63,7 @@ export default function HeroSection() {
 			{/* Content */}
 			<div className="relative z-10 flex items-center min-h-screen px-5 sm:px-8 md:px-16 lg:px-24">
 				<div className="max-w-6xl mx-auto w-full text-white flex flex-col items-center text-center">
-					<h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-heading uppercase font-black tracking-tight leading-[1.05]">
+					<h1 className="text-5xl sm:text-4xl md:text-6xl lg:text-7xl font-heading uppercase font-black tracking-tight leading-[1.05]">
 						<DecryptedText
 							text="MILE 365 RUN CLUB"
 							animateOn="view"
@@ -73,7 +73,7 @@ export default function HeroSection() {
 						/>
 					</h1>
 
-					<p className="mt-6 sm:mt-7 md:mt-8 max-w-xl md:max-w-2xl text-sm sm:text-base md:text-lg text-neutral-300 leading-relaxed">
+					<p className="mt-6 sm:mt-7 md:mt-8 max-w-md md:max-w-2xl text-sm sm:text-base md:text-lg text-neutral-300 leading-relaxed">
 						More than a run club — it's a commitment. Show up, stay
 						consistent, and move forward with a community that
 						trains hard and grows together.
