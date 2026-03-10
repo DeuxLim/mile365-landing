@@ -113,18 +113,149 @@ const TABS = [
 ] as const;
 type Tab = (typeof TABS)[number];
 
+// --- Agreement field definitions used for validation ---
+const AGREEMENT_FIELDS: { key: string; label: string }[] = [
+	{ key: "location_confirmation", label: "Location Confirmation" },
+	{ key: "fitness_acknowledgment", label: "Fitness Acknowledgment" },
+	{ key: "fb_group_joined", label: "Facebook Group Joined" },
+	{
+		key: "fb_page_joined",
+		label: "Facebook Page (at least one platform required)",
+	},
+	{ key: "attendance_commitment", label: "Attendance Commitment" },
+	{ key: "activity_expectation", label: "Activity Expectation" },
+	{ key: "community_behavior", label: "Community Behavior" },
+	{ key: "agreed_to_rules", label: "Agreed to Rules (Waiver)" },
+	{ key: "safety_commitment", label: "Safety Commitment" },
+	{ key: "media_consent", label: "Media Consent" },
+];
+
 // --- Main Component ---
 
 export default function ProfileModal(props: Props) {
 	const { profile, onClose } = props;
 	const [activeTab, setActiveTab] = useState<Tab>("Identity");
+	const [showApproveWarning, setShowApproveWarning] = useState(false);
 
 	const initials =
 		profile.identity.first_name.charAt(0) +
 		profile.identity.last_name.charAt(0);
 
+	// Collect all agreements that are false — only relevant for review variant
+	const unagreedFields =
+		props.variant === "review"
+			? AGREEMENT_FIELDS.filter((field) => {
+					const p = props.profile;
+					const allValues: Record<string, boolean> = {
+						location_confirmation: p.location.location_confirmation,
+						fitness_acknowledgment: p.health.fitness_acknowledgment,
+						fb_group_joined: p.community_platforms.fb_group_joined,
+						fb_page_joined: Array.isArray(
+							p.community_platforms.platforms_joined,
+						)
+							? p.community_platforms.platforms_joined.includes(
+									"Facebook Page",
+								)
+							: false,
+						attendance_commitment:
+							p.membership_expectations.attendance_commitment,
+						activity_expectation:
+							p.membership_expectations.activity_expectation,
+						community_behavior:
+							p.membership_expectations.community_behavior,
+						agreed_to_rules: p.waiver.agreed_to_rules,
+						safety_commitment: p.waiver.safety_commitment,
+						media_consent: p.waiver.media_consent,
+					};
+					return allValues[field.key] === false;
+				})
+			: [];
+
+	// Called when admin clicks Approve
+	function handleApproveClick() {
+		if (unagreedFields.length > 0) {
+			setShowApproveWarning(true);
+		} else if (props.variant === "review") {
+			props.onApprove();
+		}
+	}
+
 	return (
 		<div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-sm p-0 sm:p-4">
+			{/* ── Approve Warning Popup ── */}
+			{showApproveWarning && props.variant === "review" && (
+				<div className="absolute inset-0 z-60 flex items-center justify-center p-4">
+					<div className="w-full max-w-sm bg-white rounded-2xl shadow-2xl ring-1 ring-zinc-200 overflow-hidden">
+						{/* Warning header */}
+						<div className="flex items-center gap-3 px-5 py-4 bg-amber-50 border-b border-amber-100">
+							<div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center shrink-0">
+								<svg
+									className="w-4 h-4 text-amber-600"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+									strokeWidth={2}
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
+									/>
+								</svg>
+							</div>
+							<div>
+								<p className="text-sm font-semibold text-amber-800">
+									Incomplete Agreements
+								</p>
+								<p className="text-xs text-amber-600">
+									This requestor has not agreed to the
+									following:
+								</p>
+							</div>
+						</div>
+
+						{/* Unagreed list */}
+						<div className="px-5 py-4 space-y-2">
+							{unagreedFields.map((field) => (
+								<div
+									key={field.key}
+									className="flex items-center gap-2"
+								>
+									<span className="w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />
+									<p className="text-sm text-zinc-700">
+										{field.label}
+									</p>
+								</div>
+							))}
+						</div>
+
+						{/* Question + actions */}
+						<div className="px-5 pb-5 space-y-3">
+							<p className="text-xs text-zinc-500">
+								Would you still like to approve this membership
+								request?
+							</p>
+							<div className="flex gap-2">
+								<button
+									onClick={() => setShowApproveWarning(false)}
+									className="flex-1 px-4 py-2 rounded-lg text-sm font-medium text-zinc-600 border border-zinc-200 hover:bg-zinc-50 transition"
+								>
+									Cancel
+								</button>
+								<button
+									onClick={() => {
+										setShowApproveWarning(false);
+										props.onApprove();
+									}}
+									className="flex-1 px-4 py-2 rounded-lg text-sm font-semibold bg-zinc-900 text-white hover:bg-zinc-700 transition"
+								>
+									Approve Anyway
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			)}
 			{/* Modal */}
 			<div className="w-full h-full sm:h-[85vh] sm:max-w-3xl bg-zinc-50 sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden ring-1 ring-zinc-200">
 				{/* ── Header ── */}
@@ -295,7 +426,10 @@ export default function ProfileModal(props: Props) {
 					{activeTab === "Community" && (
 						<>
 							<SectionCard title="Platforms">
-								<Field label="FB Group Joined">
+								<Field
+									label="FB Group Joined"
+									hint="Required. Member must have requested to join the Facebook Group."
+								>
 									<Badge
 										value={
 											profile.community_platforms
@@ -321,7 +455,10 @@ export default function ProfileModal(props: Props) {
 									{profile.community_platforms.messenger_name}
 								</Field>
 								<div className="sm:col-span-2">
-									<Field label="Other Platforms">
+									<Field
+										label="Other Platforms"
+										hint="Required. Member must have liked the Facebook Page."
+									>
 										{profile.community_platforms.platforms_joined?.join(
 											", ",
 										) || "None"}
@@ -511,7 +648,7 @@ export default function ProfileModal(props: Props) {
 										Reject
 									</button>
 									<button
-										onClick={props.onApprove}
+										onClick={handleApproveClick}
 										className="px-5 py-2 rounded-lg text-sm font-semibold bg-zinc-900 text-white hover:bg-zinc-700 transition"
 									>
 										Approve

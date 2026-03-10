@@ -55,7 +55,12 @@ class MembershipRequestFactory extends Factory
 
             'fb_group_joined' => fake()->boolean(80),
             'community_chat_joined' => fake()->boolean(70),
-            'platforms_joined' => ['facebook', 'messenger'],
+            'platforms_joined' => [
+                "Facebook Page",
+                "Instagram",
+                "TikTok",
+                "Strava Club"
+            ],
 
             'facebook_profile_name' => fake()->name(),
             'messenger_name' => fake()->name(),
