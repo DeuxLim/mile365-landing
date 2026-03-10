@@ -1,7 +1,7 @@
 import { Link, NavLink, useNavigate } from "react-router";
 import { useMutation } from "@tanstack/react-query";
 import { logoutAdmin } from "../admin.service";
-import { useAuthenticatedAdmin } from "@/hooks/useAuthenticatedAdmin";
+import { useAuthenticatedAdmin } from "@/features/admin/hooks/useAuthenticatedAdmin";
 import { RiLogoutBoxLine } from "react-icons/ri";
 import { RiMenu3Fill } from "react-icons/ri";
 import { useState } from "react";

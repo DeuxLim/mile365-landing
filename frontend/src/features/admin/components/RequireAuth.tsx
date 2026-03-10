@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router";
-import { useAuthenticatedAdmin } from "@/hooks/useAuthenticatedAdmin";
+import { useAuthenticatedAdmin } from "@/features/admin/hooks/useAuthenticatedAdmin";
 
 export default function RequireAuth() {
 	const { admin, isPending } = useAuthenticatedAdmin();

@@ -3,7 +3,7 @@ import { createBrowserRouter, Outlet } from "react-router";
 import { lazy } from "react";
 import RootLayout from "../layouts/RootLayout";
 import { ROUTES } from "./paths.tsx";
-import WaiverAndTermsPage from "../pages/waiver-and-terms.tsx";
+import WaiverAndTermsPage from "../features/membership/pages/waiver-and-terms.tsx";
 import JoinSuccess from "@/features/membership/pages/JoinSuccess.tsx";
 
 import AdminLoginPage from "@/features/admin/pages/AdminLoginPage.tsx";

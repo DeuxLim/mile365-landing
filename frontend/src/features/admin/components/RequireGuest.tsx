@@ -1,4 +1,4 @@
-import { useAuthenticatedAdmin } from "@/hooks/useAuthenticatedAdmin";
+import { useAuthenticatedAdmin } from "@/features/admin/hooks/useAuthenticatedAdmin";
 import { Navigate, Outlet } from "react-router";
 
 export default function RequireGuest() {
