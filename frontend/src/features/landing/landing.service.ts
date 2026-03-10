@@ -1,6 +1,6 @@
 import { api } from "@/lib/api";
 
 export const getClubGalleryPhotos = async () => {
-	const res = await api.get("api/landing/gallery");
+	const res = await api.get("landing/gallery");
 	return res.data;
 };

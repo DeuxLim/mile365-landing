@@ -1,13 +1,17 @@
 import axios from "axios";
 
+const baseURL = import.meta.env.VITE_BACKEND_URL;
+
 export const api = axios.create({
-	baseURL: import.meta.env.VITE_BACKEND_URL,
-	headers: {
-		"Content-Type": "application/json",
-		Accept: "application/json",
-	},
+	baseURL: `${baseURL}/api`,
 	withCredentials: true,
 	withXSRFToken: true,
-	xsrfCookieName: "XSRF-TOKEN",
-	xsrfHeaderName: "X-XSRF-TOKEN",
+	headers: {
+		Accept: "application/json",
+	},
+});
+
+export const sanctum = axios.create({
+	baseURL,
+	withCredentials: true,
 });
