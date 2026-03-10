@@ -15,8 +15,8 @@ export function TextInput({ label, error, ...props }: TextInputProps) {
 			)}
 
 			<input
-				aria-invalid={!!error}
 				{...props}
+				aria-invalid={!!error}
 				className="
                 border border-neutral-300
                 focus:border-black focus:ring-1 focus:ring-black

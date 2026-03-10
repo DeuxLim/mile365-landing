@@ -145,8 +145,6 @@ export function TrainingProfileSection({ register, errors }: SectionProps) {
 			<div className="grid sm:grid-cols-2 gap-5 md:gap-6">
 				<TextInput
 					type="number"
-					min={0}
-					max={9}
 					placeholder="Years Running"
 					{...register("years_running")}
 					error={errors.years_running?.message}

@@ -68,6 +68,19 @@ export default function JoinForm() {
 					},
 				);
 
+				setTimeout(() => {
+					const firstError = document.querySelector(
+						"[aria-invalid='true']",
+					) as HTMLElement | null;
+
+					firstError?.scrollIntoView({
+						behavior: "smooth",
+						block: "center",
+					});
+
+					firstError?.focus();
+				}, 100);
+
 				return;
 			}
 
