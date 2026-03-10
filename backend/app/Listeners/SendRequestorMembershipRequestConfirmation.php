@@ -26,7 +26,7 @@ class SendRequestorMembershipRequestConfirmation implements ShouldQueueAfterComm
         $recipient = app()->environment('local') ? config('mail.admin_email') : $event->membershipRequest->email;
 
         if ($recipient) {
-            Mail::to($event->membershipRequest->email)->send(new MembershipRequestSent($event->membershipRequest));
+            Mail::to($recipient)->send(new MembershipRequestSent($event->membershipRequest));
         }
     }
 }
