@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { Member } from "@/features/admin/types/member.types";
 import type { MembershipRequest } from "@/features/membership/types/membership-request.types";
 import { formatDate } from "@/utils/utils";
@@ -19,17 +20,20 @@ type ReviewProps = {
 
 type Props = ReadonlyProps | ReviewProps;
 
+// --- Sub-components ---
+
 function StatusPill({ status }: { status: string }) {
+	const styles: Record<string, string> = {
+		approved: "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200",
+		rejected: "bg-red-50 text-red-700 ring-1 ring-red-200",
+		waitlisted: "bg-sky-50 text-sky-700 ring-1 ring-sky-200",
+		pending: "bg-amber-50 text-amber-700 ring-1 ring-amber-200",
+	};
+
 	return (
 		<span
-			className={`px-4 py-1 rounded-full text-xs font-medium capitalize ${
-				status === "approved"
-					? "bg-green-500/20 text-green-300"
-					: status === "rejected"
-						? "bg-red-500/20 text-red-300"
-						: status === "waitlisted"
-							? "bg-blue-500/20 text-blue-300"
-							: "bg-yellow-500/20 text-yellow-300"
+			className={`px-3 py-1 rounded-full text-[11px] font-semibold tracking-widest uppercase ${
+				styles[status] ?? styles.pending
 			}`}
 		>
 			{status}
@@ -37,465 +41,434 @@ function StatusPill({ status }: { status: string }) {
 	);
 }
 
+function Badge({ value }: { value: boolean }) {
+	return (
+		<span
+			className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-medium ${
+				value
+					? "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200"
+					: "bg-red-50 text-red-700 ring-1 ring-red-200"
+			}`}
+		>
+			<span
+				className={`w-1.5 h-1.5 rounded-full ${value ? "bg-emerald-500" : "bg-red-500"}`}
+			/>
+			{value ? "Yes" : "No"}
+		</span>
+	);
+}
+
+function Field({
+	label,
+	children,
+}: {
+	label: string;
+	children: React.ReactNode;
+}) {
+	return (
+		<div className="space-y-1">
+			<p className="text-[11px] font-semibold tracking-widest uppercase text-zinc-400">
+				{label}
+			</p>
+			<div className="text-sm font-medium text-zinc-800">{children}</div>
+		</div>
+	);
+}
+
+function SectionCard({
+	title,
+	children,
+}: {
+	title: string;
+	children: React.ReactNode;
+}) {
+	return (
+		<div className="rounded-xl bg-white ring-1 ring-zinc-200 p-5 space-y-4">
+			<h3 className="text-[11px] font-bold tracking-widest uppercase text-zinc-400 pb-2 border-b border-zinc-100">
+				{title}
+			</h3>
+			<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+				{children}
+			</div>
+		</div>
+	);
+}
+
+// --- Tab Definitions ---
+
+const TABS = ["Identity", "Training", "Health", "Community", "Review"] as const;
+type Tab = (typeof TABS)[number];
+
+// --- Main Component ---
+
 export default function ProfileModal(props: Props) {
 	const { profile, onClose } = props;
+	const [activeTab, setActiveTab] = useState<Tab>("Identity");
+
+	const initials =
+		profile.identity.first_name.charAt(0) +
+		profile.identity.last_name.charAt(0);
 
 	return (
-		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-			<div className="w-full max-w-6xl max-h-[90vh] bg-white rounded-2xl shadow-[0_25px_70px_rgba(0,0,0,0.25)] overflow-hidden flex flex-col">
-				{/* Header */}
-				<div className="sticky top-0 z-20 bg-linear-to-r from-zinc-900 to-zinc-800 text-white px-4 md:px-8 py-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-					<div className="flex items-center gap-5">
-						<div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-white/20 flex items-center justify-center text-lg md:text-xl font-semibold">
-							{profile.identity.first_name.charAt(0)}
-							{profile.identity.last_name.charAt(0)}
+		<div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-sm p-0 sm:p-4">
+			{/* Modal */}
+			<div className="w-full h-full sm:h-auto sm:max-w-3xl sm:max-h-[88vh] bg-zinc-50 sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden ring-1 ring-zinc-200">
+				{/* ── Header ── */}
+				<div className="flex items-start justify-between gap-4 px-5 sm:px-7 pt-6 pb-4 border-b border-zinc-200 bg-white">
+					<div className="flex items-center gap-4">
+						{/* Avatar */}
+						<div className="w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-full bg-gradient-to-br from-zinc-700 to-zinc-900 ring-1 ring-zinc-200 flex items-center justify-center text-base font-bold text-white tracking-wide">
+							{initials}
 						</div>
 
+						{/* Name block */}
 						<div>
-							<h2 className="text-xl font-semibold">
+							<h2 className="text-base sm:text-lg font-semibold text-zinc-900 leading-tight">
 								{profile.identity.first_name}{" "}
 								{profile.identity.last_name}
 							</h2>
-							<p className="text-sm text-zinc-300">
+							<p className="text-xs text-zinc-500 mt-0.5">
 								{profile.identity.email}
 							</p>
-							<p className="text-sm text-zinc-400">
+							<p className="text-xs text-zinc-400">
 								{profile.location.city},{" "}
 								{profile.location.province}
 							</p>
 						</div>
 					</div>
 
-					{props.variant === "review" ? (
-						<div className="flex items-center gap-4">
+					{/* Status + Close */}
+					<div className="flex items-center gap-3 shrink-0 mt-0.5">
+						{props.variant === "review" && (
 							<StatusPill status={props.profile.review.status} />
-						</div>
-					) : null}
+						)}
+						<button
+							onClick={onClose}
+							className="w-8 h-8 rounded-full bg-zinc-100 hover:bg-zinc-200 flex items-center justify-center text-zinc-400 hover:text-zinc-700 transition"
+							aria-label="Close"
+						>
+							<svg
+								className="w-4 h-4"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+								strokeWidth={2}
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									d="M6 18L18 6M6 6l12 12"
+								/>
+							</svg>
+						</button>
+					</div>
 				</div>
 
-				{/* Compact Content */}
-				<div className="flex-1 overflow-y-auto p-4 md:p-8 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 md:gap-10 text-xs md:text-sm">
-					{/* Identity */}
-					<div className="space-y-3">
-						<h3 className="font-semibold text-zinc-800">
-							Identity
-						</h3>
+				{/* ── Tabs ── */}
+				<div className="flex overflow-x-auto gap-1 px-5 sm:px-7 py-3 border-b border-zinc-200 bg-white scrollbar-hide">
+					{TABS.map((tab) => (
+						<button
+							key={tab}
+							onClick={() => setActiveTab(tab)}
+							className={`shrink-0 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition ${
+								activeTab === tab
+									? "bg-zinc-900 text-white"
+									: "text-zinc-500 hover:text-zinc-800 hover:bg-zinc-100"
+							}`}
+						>
+							{tab}
+						</button>
+					))}
+				</div>
 
-						<div className="space-y-1">
-							<p className="text-zinc-400">Phone</p>
-							<p className="font-medium text-zinc-900">
-								{profile.identity.phone}
-							</p>
-						</div>
+				{/* ── Tab Content ── */}
+				<div className="flex-1 overflow-y-auto px-5 sm:px-7 py-6 space-y-5">
+					{/* IDENTITY */}
+					{activeTab === "Identity" && (
+						<>
+							<SectionCard title="Personal">
+								<Field label="Phone">
+									{profile.identity.phone}
+								</Field>
+								<Field label="Birthdate">
+									{new Date(
+										profile.identity.birthdate,
+									).toLocaleDateString("en-PH", {
+										year: "numeric",
+										month: "long",
+										day: "numeric",
+									})}
+								</Field>
+								<Field label="Gender">
+									<span className="capitalize">
+										{profile.identity.gender}
+									</span>
+								</Field>
+							</SectionCard>
 
-						<div className="space-y-1">
-							<p className="text-zinc-400">Birthdate</p>
-							<p className="font-medium text-zinc-900">
-								{new Date(
-									profile.identity.birthdate,
-								).toLocaleDateString()}
-							</p>
-						</div>
+							<SectionCard title="Location">
+								<Field label="Country">
+									{profile.location.country}
+								</Field>
+								<Field label="City / Province">
+									{profile.location.city},{" "}
+									{profile.location.province}
+								</Field>
+								<Field label="Barangay">
+									{profile.location.barangay}
+								</Field>
+								<Field label="Location Confirmed">
+									<Badge
+										value={
+											profile.location
+												.location_confirmation
+										}
+									/>
+								</Field>
+							</SectionCard>
+						</>
+					)}
 
-						<div className="space-y-1">
-							<p className="text-zinc-400">Gender</p>
-							<p className="font-medium text-zinc-900 capitalize">
-								{profile.identity.gender}
-							</p>
-						</div>
-					</div>
-
-					{/* Location */}
-					<div className="space-y-3">
-						<h3 className="font-semibold text-zinc-800">
-							Location
-						</h3>
-
-						<div className="space-y-1">
-							<p className="text-zinc-400">Country</p>
-							<p className="font-medium text-zinc-900">
-								{profile.location.country}
-							</p>
-						</div>
-
-						<div className="space-y-1">
-							<p className="text-zinc-400">Barangay</p>
-							<p className="font-medium text-zinc-900">
-								{profile.location.barangay}
-							</p>
-						</div>
-
-						<div className="space-y-1">
-							<p className="text-zinc-400">
-								Location Confirmation
-							</p>
-							<span
-								className={`inline-block px-2 py-1 rounded text-[10px] font-medium ${
-									profile.location.location_confirmation
-										? "bg-green-100 text-green-700"
-										: "bg-red-100 text-red-700"
-								}`}
-							>
-								{profile.location.location_confirmation
-									? "Confirmed"
-									: "Not Confirmed"}
-							</span>
-						</div>
-					</div>
-
-					{/* Training */}
-					<div className="space-y-3">
-						<h3 className="font-semibold text-zinc-800">
-							Training
-						</h3>
-
-						<div className="space-y-1">
-							<p className="text-zinc-400">Training Types</p>
-							<p className="font-medium text-zinc-900">
-								{profile.training.training_types?.join(", ")}
-							</p>
-						</div>
-
-						<div className="space-y-1">
-							<p className="text-zinc-400">Experience Level</p>
-							<p className="font-medium text-zinc-900">
+					{/* TRAINING */}
+					{activeTab === "Training" && (
+						<SectionCard title="Training Info">
+							<Field label="Training Types">
+								{profile.training.training_types?.join(", ") ||
+									"N/A"}
+							</Field>
+							<Field label="Experience Level">
 								{profile.training.experience_level ?? "N/A"}
-							</p>
-						</div>
-
-						<div className="space-y-1">
-							<p className="text-zinc-400">Years Running</p>
-							<p className="font-medium text-zinc-900">
+							</Field>
+							<Field label="Years Running">
 								{profile.training.years_running} yrs
-							</p>
-						</div>
-
-						<div className="space-y-1">
-							<p className="text-zinc-400">Weekly Distance</p>
-							<p className="font-medium text-zinc-900">
+							</Field>
+							<Field label="Weekly Distance">
 								{profile.training.weekly_distance_km} km
-							</p>
-						</div>
-
-						<div className="space-y-1">
-							<p className="text-zinc-400">Average Run Pace</p>
-							<p className="font-medium text-zinc-900">
+							</Field>
+							<Field label="Avg Run Pace">
 								{profile.training.average_run_pace}
-							</p>
-						</div>
-
-						<div className="space-y-1">
-							<p className="text-zinc-400">Preferred Run Time</p>
-							<p className="font-medium text-zinc-900 capitalize">
-								{profile.training.preferred_run_time ?? "N/A"}
-							</p>
-						</div>
-
-						<div className="space-y-1">
-							<p className="text-zinc-400">Goals</p>
-							<p className="font-medium text-zinc-900">
-								{profile.training.goals}
-							</p>
-						</div>
-					</div>
-
-					{/* Health */}
-					<div className="space-y-3">
-						<h3 className="font-semibold text-zinc-800">Health</h3>
-
-						<div className="space-y-1">
-							<p className="text-zinc-400">Emergency Contact</p>
-							<p className="font-medium text-zinc-900">
-								{profile.health.emergency_contact_name}
-							</p>
-						</div>
-
-						<div className="space-y-1">
-							<p className="text-zinc-400">Emergency Phone</p>
-							<p className="font-medium text-zinc-900">
-								{profile.health.emergency_contact_phone}
-							</p>
-						</div>
-
-						<div className="space-y-1">
-							<p className="text-zinc-400">Medical Conditions</p>
-							<p className="font-medium text-zinc-900">
-								{profile.health.medical_conditions || "None"}
-							</p>
-						</div>
-
-						<div className="space-y-1">
-							<p className="text-zinc-400">
-								Fitness Acknowledgment
-							</p>
-							<span
-								className={`inline-block px-2 py-1 rounded text-[10px] font-medium ${
-									profile.health.fitness_acknowledgment
-										? "bg-green-100 text-green-700"
-										: "bg-red-100 text-red-700"
-								}`}
-							>
-								{profile.health.fitness_acknowledgment
-									? "Confirmed"
-									: "Not Confirmed"}
-							</span>
-						</div>
-					</div>
-
-					{/* Community Platforms */}
-					<div className="space-y-3">
-						<h3 className="font-semibold text-zinc-800">
-							Community Platforms
-						</h3>
-
-						<div className="space-y-1">
-							<p className="text-zinc-400">FB Group Joined</p>
-							<span
-								className={`inline-block px-2 py-1 rounded text-[10px] font-medium ${
-									profile.community_platforms.fb_group_joined
-										? "bg-green-100 text-green-700"
-										: "bg-red-100 text-red-700"
-								}`}
-							>
-								{profile.community_platforms.fb_group_joined
-									? "Yes"
-									: "No"}
-							</span>
-						</div>
-
-						<div className="space-y-1">
-							<p className="text-zinc-400">
-								Community Chat Joined
-							</p>
-							<span
-								className={`inline-block px-2 py-1 rounded text-[10px] font-medium ${
-									profile.community_platforms
-										.community_chat_joined
-										? "bg-green-100 text-green-700"
-										: "bg-red-100 text-red-700"
-								}`}
-							>
-								{profile.community_platforms
-									.community_chat_joined
-									? "Yes"
-									: "No"}
-							</span>
-						</div>
-
-						<div className="space-y-1">
-							<p className="text-zinc-400">Other Platforms</p>
-							<p className="font-medium text-zinc-900">
-								{profile.community_platforms.platforms_joined?.join(
-									", ",
-								)}
-							</p>
-						</div>
-
-						<div className="space-y-1">
-							<p className="text-zinc-400">
-								Facebook Profile Name
-							</p>
-							<p className="font-medium text-zinc-900">
-								{
-									profile.community_platforms
-										.facebook_profile_name
-								}
-							</p>
-						</div>
-
-						<div className="space-y-1">
-							<p className="text-zinc-400">Messenger Name</p>
-							<p className="font-medium text-zinc-900">
-								{profile.community_platforms.messenger_name}
-							</p>
-						</div>
-					</div>
-
-					{/* Culture Fit */}
-					<div className="md:col-span-2 space-y-3">
-						<h3 className="font-semibold text-zinc-800">
-							Culture Fit
-						</h3>
-
-						<div className="space-y-1">
-							<p className="text-zinc-400">
-								How did you hear about us?
-							</p>
-							<p className="font-medium text-zinc-900">
-								{profile.culture_fit.how_did_you_hear}
-							</p>
-						</div>
-
-						<div className="space-y-1">
-							<p className="text-zinc-400">Motivation</p>
-							<p className="font-medium text-zinc-900">
-								{profile.culture_fit.motivation}
-							</p>
-						</div>
-					</div>
-
-					{/* Membership Expectations */}
-					<div className="space-y-3">
-						<h3 className="font-semibold text-zinc-800">
-							Membership Expectations
-						</h3>
-
-						<span
-							className={`inline-block px-2 py-1 rounded text-[10px] font-medium mr-2 ${
-								profile.membership_expectations
-									.attendance_commitment
-									? "bg-green-100 text-green-700"
-									: "bg-red-100 text-red-700"
-							}`}
-						>
-							Attendance Commitment
-						</span>
-
-						<span
-							className={`inline-block px-2 py-1 rounded text-[10px] font-medium mr-2 ${
-								profile.membership_expectations
-									.activity_expectation
-									? "bg-green-100 text-green-700"
-									: "bg-red-100 text-red-700"
-							}`}
-						>
-							Activity Expectation
-						</span>
-
-						<span
-							className={`inline-block px-2 py-1 rounded text-[10px] font-medium ${
-								profile.membership_expectations
-									.community_behavior
-									? "bg-green-100 text-green-700"
-									: "bg-red-100 text-red-700"
-							}`}
-						>
-							Community Behavior
-						</span>
-					</div>
-
-					{/* Waiver & Agreement */}
-					<div className="space-y-3">
-						<h3 className="font-semibold text-zinc-800">
-							Waiver & Agreement
-						</h3>
-
-						<span
-							className={`inline-block px-2 py-1 rounded text-[10px] font-medium mr-2 ${
-								profile.waiver.agreed_to_rules
-									? "bg-green-100 text-green-700"
-									: "bg-red-100 text-red-700"
-							}`}
-						>
-							Agreed to Rules
-						</span>
-
-						<span
-							className={`inline-block px-2 py-1 rounded text-[10px] font-medium mr-2 ${
-								profile.waiver.safety_commitment
-									? "bg-green-100 text-green-700"
-									: "bg-red-100 text-red-700"
-							}`}
-						>
-							Safety Commitment
-						</span>
-
-						<span
-							className={`inline-block px-2 py-1 rounded text-[10px] font-medium ${
-								profile.waiver.media_consent
-									? "bg-green-100 text-green-700"
-									: "bg-red-100 text-red-700"
-							}`}
-						>
-							Media Consent
-						</span>
-					</div>
-
-					{/* Review */}
-					{props.variant === "review" ? (
-						<div className="md:col-span-2 space-y-3">
-							<h3 className="font-semibold text-zinc-800">
-								Review
-							</h3>
-
-							<div className="space-y-1">
-								<p className="text-zinc-400">Reviewed By</p>
-								<p className="font-medium text-zinc-900">
-									{props.profile.review.reviewed_by ??
-										"Not yet reviewed"}
-								</p>
+							</Field>
+							<Field label="Preferred Run Time">
+								<span className="capitalize">
+									{profile.training.preferred_run_time ??
+										"N/A"}
+								</span>
+							</Field>
+							<div className="sm:col-span-2">
+								<Field label="Goals">
+									{profile.training.goals}
+								</Field>
 							</div>
+						</SectionCard>
+					)}
 
-							<div className="space-y-1">
-								<p className="text-zinc-400">Admin Notes</p>
-								<p className="font-medium text-zinc-900">
+					{/* HEALTH */}
+					{activeTab === "Health" && (
+						<>
+							<SectionCard title="Emergency Contact">
+								<Field label="Name">
+									{profile.health.emergency_contact_name}
+								</Field>
+								<Field label="Phone">
+									{profile.health.emergency_contact_phone}
+								</Field>
+							</SectionCard>
+
+							<SectionCard title="Medical & Acknowledgment">
+								<div className="sm:col-span-2">
+									<Field label="Medical Conditions">
+										{profile.health.medical_conditions ||
+											"None"}
+									</Field>
+								</div>
+								<Field label="Fitness Acknowledgment">
+									<Badge
+										value={
+											profile.health
+												.fitness_acknowledgment
+										}
+									/>
+								</Field>
+							</SectionCard>
+
+							<SectionCard title="Waiver & Agreement">
+								<Field label="Agreed to Rules">
+									<Badge
+										value={profile.waiver.agreed_to_rules}
+									/>
+								</Field>
+								<Field label="Safety Commitment">
+									<Badge
+										value={profile.waiver.safety_commitment}
+									/>
+								</Field>
+								<Field label="Media Consent">
+									<Badge
+										value={profile.waiver.media_consent}
+									/>
+								</Field>
+							</SectionCard>
+						</>
+					)}
+
+					{/* COMMUNITY */}
+					{activeTab === "Community" && (
+						<>
+							<SectionCard title="Platforms">
+								<Field label="FB Group Joined">
+									<Badge
+										value={
+											profile.community_platforms
+												.fb_group_joined
+										}
+									/>
+								</Field>
+								<Field label="Community Chat Joined">
+									<Badge
+										value={
+											profile.community_platforms
+												.community_chat_joined
+										}
+									/>
+								</Field>
+								<Field label="Facebook Name">
+									{
+										profile.community_platforms
+											.facebook_profile_name
+									}
+								</Field>
+								<Field label="Messenger Name">
+									{profile.community_platforms.messenger_name}
+								</Field>
+								<div className="sm:col-span-2">
+									<Field label="Other Platforms">
+										{profile.community_platforms.platforms_joined?.join(
+											", ",
+										) || "None"}
+									</Field>
+								</div>
+							</SectionCard>
+
+							<SectionCard title="Membership Expectations">
+								<Field label="Attendance Commitment">
+									<Badge
+										value={
+											profile.membership_expectations
+												.attendance_commitment
+										}
+									/>
+								</Field>
+								<Field label="Activity Expectation">
+									<Badge
+										value={
+											profile.membership_expectations
+												.activity_expectation
+										}
+									/>
+								</Field>
+								<Field label="Community Behavior">
+									<Badge
+										value={
+											profile.membership_expectations
+												.community_behavior
+										}
+									/>
+								</Field>
+							</SectionCard>
+
+							<SectionCard title="Culture Fit">
+								<div className="sm:col-span-2">
+									<Field label="How did you hear about us?">
+										{profile.culture_fit.how_did_you_hear}
+									</Field>
+								</div>
+								<div className="sm:col-span-2">
+									<Field label="Motivation">
+										{profile.culture_fit.motivation}
+									</Field>
+								</div>
+							</SectionCard>
+						</>
+					)}
+
+					{/* REVIEW */}
+					{activeTab === "Review" && props.variant === "review" && (
+						<SectionCard title="Review Details">
+							<Field label="Reviewed By">
+								{props.profile.review.reviewed_by ??
+									"Not yet reviewed"}
+							</Field>
+							<Field label="Status">
+								<StatusPill
+									status={props.profile.review.status}
+								/>
+							</Field>
+							<Field label="Reviewed At">
+								{props.profile.review.reviewed_at
+									? formatDate(
+											props.profile.review.reviewed_at,
+										)
+									: "N/A"}
+							</Field>
+							<Field label="Agreed At">
+								{props.profile.review.agreed_at ?? "N/A"}
+							</Field>
+							<div className="sm:col-span-2">
+								<Field label="Admin Notes">
 									{props.profile.review.admin_notes ?? "None"}
-								</p>
+								</Field>
 							</div>
+						</SectionCard>
+					)}
 
-							<div className="space-y-1">
-								<p className="text-zinc-400">Reviewed At</p>
-								<p className="font-medium text-zinc-900">
-									{props.profile.review.reviewed_at
-										? formatDate(
-												props.profile.review
-													.reviewed_at,
-											)
-										: "N/A"}
-								</p>
-							</div>
-
-							<div className="space-y-1">
-								<p className="text-zinc-400">Agreed At</p>
-								<p className="font-medium text-zinc-900">
-									{props.profile.review.agreed_at ?? "N/A"}
-								</p>
-							</div>
+					{activeTab === "Review" && props.variant === "readonly" && (
+						<div className="flex items-center justify-center h-32 text-zinc-400 text-sm">
+							No review info available.
 						</div>
-					) : null}
+					)}
 				</div>
 
-				{/* Footer Actions */}
-				<div className="sticky bottom-0 z-20 flex flex-col md:flex-row md:items-center md:justify-between gap-4 px-4 md:px-8 py-4 md:py-6 border-t border-zinc-200 bg-zinc-50">
+				{/* ── Footer ── */}
+				<div className="border-t border-zinc-200 bg-white px-5 sm:px-7 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+					{/* Admin note input — only for pending reviews */}
 					{props.variant === "review" &&
-					props.profile.review.status === "pending" ? (
-						<div>
+						props.profile.review.status === "pending" && (
 							<input
 								type="text"
-								className="border-zinc-400 border rounded-md px-4 py-2 w-full md:w-96"
-								placeholder="Type admin note here..."
+								className="flex-1 bg-zinc-50 border border-zinc-300 text-sm text-zinc-800 placeholder-zinc-400 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-1 focus:ring-zinc-400 transition"
+								placeholder="Admin note (optional)..."
 								onChange={(e) =>
 									props.setAdminNote(e.target.value)
 								}
 							/>
-						</div>
-					) : null}
-					<div className="flex flex-col-reverse md:flex-row md:justify-end gap-3 md:gap-4 w-full">
+						)}
+
+					{/* Buttons */}
+					<div className="flex gap-3 sm:ml-auto">
 						<button
 							onClick={onClose}
-							className="px-4 md:px-6 py-2 border border-zinc-400 rounded-md text-zinc-700 hover:bg-zinc-100 transition w-full md:w-auto"
+							className="px-4 py-2 rounded-lg text-sm font-medium text-zinc-500 hover:text-zinc-800 border border-zinc-200 hover:bg-zinc-50 transition"
 						>
 							Close
 						</button>
 
 						{props.variant === "review" &&
-						props.profile.review.status === "pending" ? (
-							<>
-								<button
-									onClick={props.onReject}
-									className="px-4 md:px-6 py-2 border border-red-300 text-red-700 rounded-md hover:bg-red-50 transition w-full md:w-auto"
-								>
-									Reject
-								</button>
-
-								<button
-									onClick={props.onApprove}
-									className="px-4 md:px-6 py-2 bg-black text-white rounded-md hover:bg-zinc-800 transition w-full md:w-auto"
-								>
-									Approve
-								</button>
-							</>
-						) : null}
+							props.profile.review.status === "pending" && (
+								<>
+									<button
+										onClick={props.onReject}
+										className="px-4 py-2 rounded-lg text-sm font-medium text-red-600 border border-red-200 hover:bg-red-50 transition"
+									>
+										Reject
+									</button>
+									<button
+										onClick={props.onApprove}
+										className="px-5 py-2 rounded-lg text-sm font-semibold bg-zinc-900 text-white hover:bg-zinc-700 transition"
+									>
+										Approve
+									</button>
+								</>
+							)}
 					</div>
 				</div>
 			</div>
