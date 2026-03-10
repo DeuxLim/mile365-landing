@@ -60,9 +60,11 @@ function Badge({ value }: { value: boolean }) {
 
 function Field({
 	label,
+	hint,
 	children,
 }: {
 	label: string;
+	hint?: string;
 	children: React.ReactNode;
 }) {
 	return (
@@ -71,6 +73,11 @@ function Field({
 				{label}
 			</p>
 			<div className="text-sm font-medium text-zinc-800">{children}</div>
+			{hint && (
+				<p className="text-[11px] text-zinc-400 leading-relaxed">
+					{hint}
+				</p>
+			)}
 		</div>
 	);
 }
@@ -96,7 +103,14 @@ function SectionCard({
 
 // --- Tab Definitions ---
 
-const TABS = ["Identity", "Training", "Health", "Community", "Review"] as const;
+const TABS = [
+	"Identity",
+	"Training",
+	"Health",
+	"Community",
+	"Agreements",
+	"Review",
+] as const;
 type Tab = (typeof TABS)[number];
 
 // --- Main Component ---
@@ -112,7 +126,7 @@ export default function ProfileModal(props: Props) {
 	return (
 		<div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-sm p-0 sm:p-4">
 			{/* Modal */}
-			<div className="w-full h-full sm:h-auto sm:max-w-3xl sm:max-h-[88vh] bg-zinc-50 sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden ring-1 ring-zinc-200">
+			<div className="w-full h-full sm:h-[85vh] sm:max-w-3xl bg-zinc-50 sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden ring-1 ring-zinc-200">
 				{/* ── Header ── */}
 				<div className="flex items-start justify-between gap-4 px-5 sm:px-7 pt-6 pb-4 border-b border-zinc-200 bg-white">
 					<div className="flex items-center gap-4">
@@ -217,14 +231,6 @@ export default function ProfileModal(props: Props) {
 								<Field label="Barangay">
 									{profile.location.barangay}
 								</Field>
-								<Field label="Location Confirmed">
-									<Badge
-										value={
-											profile.location
-												.location_confirmation
-										}
-									/>
-								</Field>
 							</SectionCard>
 						</>
 					)}
@@ -274,39 +280,13 @@ export default function ProfileModal(props: Props) {
 								</Field>
 							</SectionCard>
 
-							<SectionCard title="Medical & Acknowledgment">
+							<SectionCard title="Medical">
 								<div className="sm:col-span-2">
 									<Field label="Medical Conditions">
 										{profile.health.medical_conditions ||
 											"None"}
 									</Field>
 								</div>
-								<Field label="Fitness Acknowledgment">
-									<Badge
-										value={
-											profile.health
-												.fitness_acknowledgment
-										}
-									/>
-								</Field>
-							</SectionCard>
-
-							<SectionCard title="Waiver & Agreement">
-								<Field label="Agreed to Rules">
-									<Badge
-										value={profile.waiver.agreed_to_rules}
-									/>
-								</Field>
-								<Field label="Safety Commitment">
-									<Badge
-										value={profile.waiver.safety_commitment}
-									/>
-								</Field>
-								<Field label="Media Consent">
-									<Badge
-										value={profile.waiver.media_consent}
-									/>
-								</Field>
 							</SectionCard>
 						</>
 					)}
@@ -349,33 +329,6 @@ export default function ProfileModal(props: Props) {
 								</div>
 							</SectionCard>
 
-							<SectionCard title="Membership Expectations">
-								<Field label="Attendance Commitment">
-									<Badge
-										value={
-											profile.membership_expectations
-												.attendance_commitment
-										}
-									/>
-								</Field>
-								<Field label="Activity Expectation">
-									<Badge
-										value={
-											profile.membership_expectations
-												.activity_expectation
-										}
-									/>
-								</Field>
-								<Field label="Community Behavior">
-									<Badge
-										value={
-											profile.membership_expectations
-												.community_behavior
-										}
-									/>
-								</Field>
-							</SectionCard>
-
 							<SectionCard title="Culture Fit">
 								<div className="sm:col-span-2">
 									<Field label="How did you hear about us?">
@@ -387,6 +340,102 @@ export default function ProfileModal(props: Props) {
 										{profile.culture_fit.motivation}
 									</Field>
 								</div>
+							</SectionCard>
+						</>
+					)}
+
+					{/* AGREEMENTS */}
+					{activeTab === "Agreements" && (
+						<>
+							<SectionCard title="Location">
+								<Field
+									label="Location Confirmed"
+									hint="Member confirmed they can regularly attend sessions in Malolos / Bulacan."
+								>
+									<Badge
+										value={
+											profile.location
+												.location_confirmation
+										}
+									/>
+								</Field>
+							</SectionCard>
+
+							<SectionCard title="Fitness & Health">
+								<Field
+									label="Fitness Acknowledgment"
+									hint="Member confirmed they are physically capable of joining sessions and accept personal responsibility for their health and safety."
+								>
+									<Badge
+										value={
+											profile.health
+												.fitness_acknowledgment
+										}
+									/>
+								</Field>
+							</SectionCard>
+
+							<SectionCard title="Membership Expectations">
+								<Field
+									label="Attendance Commitment"
+									hint="Member understands they must complete at least 2 group sessions before official membership is confirmed."
+								>
+									<Badge
+										value={
+											profile.membership_expectations
+												.attendance_commitment
+										}
+									/>
+								</Field>
+								<Field
+									label="Activity Expectation"
+									hint="Member understands that inactive members may be removed to keep the club engaged."
+								>
+									<Badge
+										value={
+											profile.membership_expectations
+												.activity_expectation
+										}
+									/>
+								</Field>
+								<Field
+									label="Community Behavior"
+									hint="Member agreed to be respectful in all club spaces — group chats, sessions, and other club platforms."
+								>
+									<Badge
+										value={
+											profile.membership_expectations
+												.community_behavior
+										}
+									/>
+								</Field>
+							</SectionCard>
+
+							<SectionCard title="Waiver & Agreement">
+								<Field
+									label="Agreed to Rules"
+									hint="Member agreed to the Liability Waiver, Safety Policy, and Participation Terms."
+								>
+									<Badge
+										value={profile.waiver.agreed_to_rules}
+									/>
+								</Field>
+								<Field
+									label="Safety Commitment"
+									hint="Member agreed to follow safety instructions, wear proper gear, and not join sessions when unwell."
+								>
+									<Badge
+										value={profile.waiver.safety_commitment}
+									/>
+								</Field>
+								<Field
+									label="Media Consent"
+									hint="Member allows the club to capture and share photos/videos on club platforms."
+								>
+									<Badge
+										value={profile.waiver.media_consent}
+									/>
+								</Field>
 							</SectionCard>
 						</>
 					)}
