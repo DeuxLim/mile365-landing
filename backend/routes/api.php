@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\MembershipRequestController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\MemberController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/letsgo365', function () {
     return response()->json([
@@ -13,6 +14,9 @@ Route::get('/letsgo365', function () {
 
 Route::post('/admin/login', [AuthController::class, 'login'])->middleware('throttle:10,1');
 Route::middleware(['auth:sanctum', 'can:admin_access'])->prefix('admin')->group(function () {
+    /* Dashboard */
+    Route::get('/dashboard/stats', [DashboardController::class, 'index']);
+    
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
