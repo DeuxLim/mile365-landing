@@ -23,13 +23,25 @@ export default function Footer() {
 
 				{/* Social Links */}
 				<div className="flex gap-10 text-sm uppercase tracking-widest">
-					<a href="#" className="hover:text-neutral-400 transition">
+					<a
+						href="https://www.facebook.com/profile.php?id=61574880081979"
+						target="_blank"
+						className="hover:text-neutral-400 transition"
+					>
 						Facebook
 					</a>
-					<a href="#" className="hover:text-neutral-400 transition">
+					<a
+						href="https://www.instagram.com/mile365runclub/"
+						target="_blank"
+						className="hover:text-neutral-400 transition"
+					>
 						Instagram
 					</a>
-					<a href="#" className="hover:text-neutral-400 transition">
+					<a
+						href="https://www.tiktok.com/@mile365runclub"
+						target="_blank"
+						className="hover:text-neutral-400 transition"
+					>
 						TikTok
 					</a>
 				</div>
