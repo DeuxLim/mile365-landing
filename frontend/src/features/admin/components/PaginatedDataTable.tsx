@@ -46,7 +46,7 @@ export default function PaginatedDataTable<TData>({
 	pagination,
 }: Props<TData>) {
 	return (
-		<div className="hidden md:flex flex-col">
+		<>
 			<div className="flex justify-between">
 				{tabs ? (
 					<ul className="flex text-xs items-end">
@@ -187,6 +187,6 @@ export default function PaginatedDataTable<TData>({
 					</div>
 				) : null}
 			</div>
-		</div>
+		</>
 	);
 }

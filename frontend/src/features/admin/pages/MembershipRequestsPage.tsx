@@ -215,36 +215,40 @@ export default function MembershipRequestsPage() {
 		<div className="p-6 relative">
 			<h1 className="text-2xl font-semibold">Membership Requests</h1>
 
-			<PaginatedDataTable
-				columns={columns}
-				rows={data.data}
-				getRowKey={(req) => req.id}
-				emptyMessage={
-					search.length > 0 ? "No matching requests." : "No requests."
-				}
-				search={{
-					value: searchInput,
-					onChange: scheduleSearch,
-					onClear: () => scheduleSearch(""),
-					placeholder: "Search requests...",
-				}}
-				tabs={{
-					value: selectedStatus,
-					onChange: handleStatusSelection,
-					tabs: [
-						{ label: "Approved", value: "approved" },
-						{ label: "Rejected", value: "rejected" },
-						{ label: "Pending", value: "pending" },
-					],
-				}}
-				pagination={{
-					page,
-					lastPage: meta.last_page,
-					onPageChange: setPage,
-				}}
-			/>
+			<div className="hidden xl:flex flex-col">
+				<PaginatedDataTable
+					columns={columns}
+					rows={data.data}
+					getRowKey={(req) => req.id}
+					emptyMessage={
+						search.length > 0
+							? "No matching requests."
+							: "No requests."
+					}
+					search={{
+						value: searchInput,
+						onChange: scheduleSearch,
+						onClear: () => scheduleSearch(""),
+						placeholder: "Search requests...",
+					}}
+					tabs={{
+						value: selectedStatus,
+						onChange: handleStatusSelection,
+						tabs: [
+							{ label: "Approved", value: "approved" },
+							{ label: "Rejected", value: "rejected" },
+							{ label: "Pending", value: "pending" },
+						],
+					}}
+					pagination={{
+						page,
+						lastPage: meta.last_page,
+						onPageChange: setPage,
+					}}
+				/>
+			</div>
 
-			<div className="md:hidden my-4">
+			<div className="xl:hidden my-4">
 				<PaginatedCardList
 					rows={data.data}
 					getRowKey={(req) => req.id}

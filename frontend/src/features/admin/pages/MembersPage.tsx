@@ -117,7 +117,7 @@ export default function MembersPage() {
 			</div>
 
 			{/* DESKTOP TABLE */}
-			<div className="hidden md:block">
+			<div className="hidden xl:block">
 				<PaginatedDataTable
 					columns={columns}
 					rows={members}
@@ -142,7 +142,7 @@ export default function MembersPage() {
 			</div>
 
 			{/* MOBILE CARD LIST */}
-			<div className="md:hidden">
+			<div className="xl:hidden">
 				<PaginatedCardList
 					rows={members}
 					getRowKey={(member) => member.id}
