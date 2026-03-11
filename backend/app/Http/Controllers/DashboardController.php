@@ -11,7 +11,7 @@ class DashboardController extends Controller
     {
         return response()->json([
             'stats' => [
-                'pendingRequests' => DashboardService::countPendingRequests(),
+                'Pending Requests' => DashboardService::countPendingRequests(),
             ]
         ], 200);
     }
