@@ -72,7 +72,7 @@ export default function AdminDashboardPage() {
 						return (
 							<div
 								key={index}
-								className="col-span-4 md:col-span-8 lg:col-span-4 xl:col-span-3 rounded-md shadow-sm p-4 hover:shadow-lg transition duration-200 ease-in-out border border-zinc-300"
+								className="col-span-4 md:col-span-8 lg:col-span-4 xl:col-span-4 rounded-md shadow-sm p-4 hover:shadow-lg transition duration-200 ease-in-out border border-zinc-300"
 							>
 								<StatsWidget label={key} value={value} />
 							</div>
