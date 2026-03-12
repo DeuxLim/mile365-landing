@@ -103,6 +103,29 @@ class _MembershipRequest extends FormRequest
 
     protected function prepareForValidation()
     {
+        $booleanFields = [
+            'location_confirmation',
+            'fb_group_requested',
+            'fitness_acknowledgment',
+            'attendance_commitment',
+            'activity_expectation',
+            'community_behavior',
+            'agreed_to_rules',
+            'safety_commitment',
+            'media_consent',
+        ];
+
+        $normalizedBooleans = [];
+        foreach ($booleanFields as $field) {
+            if ($this->has($field)) {
+                $normalizedBooleans[$field] = $this->boolean($field);
+            }
+        }
+
+        if ($normalizedBooleans !== []) {
+            $this->merge($normalizedBooleans);
+        }
+
         if ($this->has('experience_level')) {
             $this->merge([
                 'experience_level' => strtolower($this->experience_level),

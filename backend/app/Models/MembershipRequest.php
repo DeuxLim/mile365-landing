@@ -117,6 +117,7 @@ class MembershipRequest extends Model
         'attendance_commitment' => 'boolean',
         'activity_expectation' => 'boolean',
         'community_behavior' => 'boolean',
+        'agreed_to_rules' => 'boolean',
         'safety_commitment' => 'boolean',
         'media_consent' => 'boolean',
     ];
