@@ -1,3 +1,9 @@
+import {
+	MILE_365_FACEBOOK_PAGE_LINK,
+	MILE_365_INSTAGRAM_LINK,
+	MILE_365_STRAVA_LINK,
+	MILE_365_TIKTOK_LINK,
+} from "@/config/links";
 import { motion } from "framer-motion";
 
 export default function Footer() {
@@ -24,25 +30,32 @@ export default function Footer() {
 				{/* Social Links */}
 				<div className="flex gap-10 text-sm uppercase tracking-widest">
 					<a
-						href="https://www.facebook.com/profile.php?id=61574880081979"
+						href={MILE_365_FACEBOOK_PAGE_LINK}
 						target="_blank"
 						className="hover:text-neutral-400 transition"
 					>
 						Facebook
 					</a>
 					<a
-						href="https://www.instagram.com/mile365runclub/"
+						href={MILE_365_INSTAGRAM_LINK}
 						target="_blank"
 						className="hover:text-neutral-400 transition"
 					>
 						Instagram
 					</a>
 					<a
-						href="https://www.tiktok.com/@mile365runclub"
+						href={MILE_365_TIKTOK_LINK}
 						target="_blank"
 						className="hover:text-neutral-400 transition"
 					>
 						Tiktok
+					</a>
+					<a
+						href={MILE_365_STRAVA_LINK}
+						target="_blank"
+						className="hover:text-neutral-400 transition"
+					>
+						Strava
 					</a>
 				</div>
 
