@@ -88,10 +88,6 @@ export const communityPlatformsSchema = z.object({
 	fb_group_requested: z.boolean().refine((value) => value === true, {
 		message: "Facebook Group Request is required.",
 	}),
-	community_chat_joined: z.boolean().refine((value) => value === true, {
-		message: "Community Chat is required.",
-	}),
-
 	platforms_joined: z
 		.array(z.string())
 		.min(1, "Please select at least one other platform."),

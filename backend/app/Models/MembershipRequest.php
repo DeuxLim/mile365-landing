@@ -53,7 +53,6 @@ class MembershipRequest extends Model
         |--------------------------------------------------------------------------
         */
         'fb_group_requested',
-        'community_chat_joined',
         'platforms_joined',
         'facebook_profile_name',
         'messenger_name',
@@ -115,7 +114,6 @@ class MembershipRequest extends Model
 
         'location_confirmation' => 'boolean',
         'fb_group_requested' => 'boolean',
-        'community_chat_joined' => 'boolean',
         'fitness_acknowledgment' => 'boolean',
         'attendance_commitment' => 'boolean',
         'activity_expectation' => 'boolean',

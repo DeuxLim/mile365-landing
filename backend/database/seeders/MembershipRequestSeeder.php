@@ -42,7 +42,6 @@ class MembershipRequestSeeder extends Seeder
                         'goals',
 
                         'fb_group_requested',
-                        'community_chat_joined',
                         'platforms_joined',
                         'facebook_profile_name',
                         'messenger_name',

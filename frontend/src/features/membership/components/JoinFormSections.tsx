@@ -206,12 +206,6 @@ export function CommunityPlatformsSection({ register, errors }: SectionProps) {
 					{...register("fb_group_requested")}
 					error={errors.fb_group_requested?.message}
 				/>
-
-				<Checkbox
-					label="Community Chat (Required)"
-					{...register("community_chat_joined")}
-					error={errors.community_chat_joined?.message}
-				/>
 			</div>
 
 			<div className="space-y-3">

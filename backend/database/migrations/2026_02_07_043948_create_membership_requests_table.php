@@ -56,7 +56,6 @@ return new class extends Migration
             |--------------------------------------------------------------------------
             */
             $table->boolean('fb_group_requested')->default(false);
-            $table->boolean('community_chat_joined')->default(false);
             $table->json('platforms_joined')->nullable();
             $table->string('facebook_profile_name')->nullable();
             $table->string('messenger_name')->nullable();

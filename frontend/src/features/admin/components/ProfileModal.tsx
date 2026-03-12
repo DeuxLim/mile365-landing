@@ -149,7 +149,8 @@ export default function ProfileModal(props: Props) {
 					const allValues: Record<string, boolean> = {
 						location_confirmation: p.location.location_confirmation,
 						fitness_acknowledgment: p.health.fitness_acknowledgment,
-						fb_group_requested: p.community_platforms.fb_group_requested,
+						fb_group_requested:
+							p.community_platforms.fb_group_requested,
 						fb_page_joined: Array.isArray(
 							p.community_platforms.platforms_joined,
 						)
@@ -434,14 +435,6 @@ export default function ProfileModal(props: Props) {
 										value={
 											profile.community_platforms
 												.fb_group_requested
-										}
-									/>
-								</Field>
-								<Field label="Community Chat Joined">
-									<Badge
-										value={
-											profile.community_platforms
-												.community_chat_joined
 										}
 									/>
 								</Field>

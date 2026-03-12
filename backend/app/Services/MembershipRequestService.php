@@ -119,7 +119,6 @@ class MembershipRequestService
                 'goals' => $request->goals,
 
                 'fb_group_requested' => $request->fb_group_requested,
-                'community_chat_joined' => $request->community_chat_joined,
                 'platforms_joined' => $request->platforms_joined,
                 'facebook_profile_name' => $request->facebook_profile_name,
                 'messenger_name' => $request->messenger_name,

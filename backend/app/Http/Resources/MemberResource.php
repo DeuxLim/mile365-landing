@@ -63,7 +63,6 @@ class MemberResource extends JsonResource
             */
             'community_platforms' => [
                 'fb_group_requested' => $this->fb_group_requested,
-                'community_chat_joined' => $this->community_chat_joined,
                 'platforms_joined' => $this->platforms_joined,
                 'facebook_profile_name' => $this->facebook_profile_name,
                 'messenger_name' => $this->messenger_name,
