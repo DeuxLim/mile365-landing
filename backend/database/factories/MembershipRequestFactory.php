@@ -53,7 +53,7 @@ class MembershipRequestFactory extends Factory
             ]),
             'goals' => fake()->sentence(),
 
-            'fb_group_joined' => fake()->boolean(80),
+            'fb_group_requested' => fake()->boolean(80),
             'community_chat_joined' => fake()->boolean(70),
             'platforms_joined' => [
                 "Facebook Page",

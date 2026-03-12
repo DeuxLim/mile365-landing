@@ -52,7 +52,7 @@ class MembershipRequest extends Model
         | COMMUNITY PLATFORMS
         |--------------------------------------------------------------------------
         */
-        'fb_group_joined',
+        'fb_group_requested',
         'community_chat_joined',
         'platforms_joined',
         'facebook_profile_name',
@@ -114,7 +114,7 @@ class MembershipRequest extends Model
         'reviewed_at' => 'datetime',
 
         'location_confirmation' => 'boolean',
-        'fb_group_joined' => 'boolean',
+        'fb_group_requested' => 'boolean',
         'community_chat_joined' => 'boolean',
         'fitness_acknowledgment' => 'boolean',
         'attendance_commitment' => 'boolean',

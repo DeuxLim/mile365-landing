@@ -203,8 +203,8 @@ export function CommunityPlatformsSection({ register, errors }: SectionProps) {
 			<div className="space-y-3">
 				<Checkbox
 					label="Facebook Group (Required)"
-					{...register("fb_group_joined")}
-					error={errors.fb_group_joined?.message}
+					{...register("fb_group_requested")}
+					error={errors.fb_group_requested?.message}
 				/>
 
 				<Checkbox

@@ -58,7 +58,7 @@ class _MembershipRequest extends FormRequest
             | COMMUNITY PLATFORMS
             |--------------------------------------------------------------------------
             */
-            'fb_group_joined' => 'required|boolean',
+            'fb_group_requested' => 'required|boolean',
             'community_chat_joined' => 'required|boolean',
             'platforms_joined' => 'nullable|array',
             'platforms_joined.*' => 'string|max:50',

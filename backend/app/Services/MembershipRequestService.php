@@ -118,7 +118,7 @@ class MembershipRequestService
                 'preferred_run_time' => $request->preferred_run_time,
                 'goals' => $request->goals,
 
-                'fb_group_joined' => $request->fb_group_joined,
+                'fb_group_requested' => $request->fb_group_requested,
                 'community_chat_joined' => $request->community_chat_joined,
                 'platforms_joined' => $request->platforms_joined,
                 'facebook_profile_name' => $request->facebook_profile_name,

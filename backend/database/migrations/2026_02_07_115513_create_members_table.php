@@ -55,7 +55,7 @@ return new class extends Migration
             | COMMUNITY PLATFORMS
             |--------------------------------------------------------------------------
             */
-            $table->boolean('fb_group_joined')->default(false);
+            $table->boolean('fb_group_requested')->default(false);
             $table->boolean('community_chat_joined')->default(false);
             $table->json('platforms_joined')->nullable();
             $table->string('facebook_profile_name')->nullable();

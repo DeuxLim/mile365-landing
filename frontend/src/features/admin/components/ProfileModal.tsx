@@ -117,7 +117,7 @@ type Tab = (typeof TABS)[number];
 const AGREEMENT_FIELDS: { key: string; label: string }[] = [
 	{ key: "location_confirmation", label: "Location Confirmation" },
 	{ key: "fitness_acknowledgment", label: "Fitness Acknowledgment" },
-	{ key: "fb_group_joined", label: "Facebook Group Joined" },
+	{ key: "fb_group_requested", label: "Facebook Group Requested" },
 	{
 		key: "fb_page_joined",
 		label: "Facebook Page (at least one platform required)",
@@ -149,7 +149,7 @@ export default function ProfileModal(props: Props) {
 					const allValues: Record<string, boolean> = {
 						location_confirmation: p.location.location_confirmation,
 						fitness_acknowledgment: p.health.fitness_acknowledgment,
-						fb_group_joined: p.community_platforms.fb_group_joined,
+						fb_group_requested: p.community_platforms.fb_group_requested,
 						fb_page_joined: Array.isArray(
 							p.community_platforms.platforms_joined,
 						)
@@ -433,7 +433,7 @@ export default function ProfileModal(props: Props) {
 									<Badge
 										value={
 											profile.community_platforms
-												.fb_group_joined
+												.fb_group_requested
 										}
 									/>
 								</Field>
