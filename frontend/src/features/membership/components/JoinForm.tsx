@@ -157,13 +157,13 @@ export default function JoinForm() {
 			<PersonalInformationSection register={register} errors={errors} />
 			<LocationSection register={register} errors={errors} />
 			<TrainingProfileSection register={register} errors={errors} />
-			<CommunityPlatformsSection register={register} errors={errors} />
 			<HealthSafetySection register={register} errors={errors} />
+			<CommunitySection register={register} errors={errors} />
+			<CommunityPlatformsSection register={register} errors={errors} />
 			<MembershipExpectationsSection
 				register={register}
 				errors={errors}
 			/>
-			<CommunitySection register={register} errors={errors} />
 			<WaiverAgreementSection register={register} errors={errors} />
 
 			<div ref={submitAnchorRef}>
