@@ -6,6 +6,15 @@ import { TextInput } from "../../../components/form/TextInput";
 import { TextareaInput } from "../../../components/form/TextareaInput";
 import type { MembershipRequestInput } from "../types/membership-request.types";
 
+import { RiExternalLinkFill } from "react-icons/ri";
+import {
+	MILE_365_FACEBOOK_GROUP_LINK,
+	MILE_365_FACEBOOK_PAGE_LINK,
+	MILE_365_INSTAGRAM_LINK,
+	MILE_365_STRAVA_LINK,
+	MILE_365_TIKTOK_LINK,
+} from "@/config/links";
+
 type SectionProps = {
 	register: UseFormRegister<MembershipRequestInput>;
 	errors: FieldErrors<MembershipRequestInput>;
@@ -120,14 +129,14 @@ export function TrainingProfileSection({ register, errors }: SectionProps) {
 				<CheckboxGroup
 					name="training_types"
 					options={[
-						"running",
-						"cycling",
-						"gym",
-						"swimming",
-						"walking",
-						"yoga",
-						"boxing",
-						"other",
+						{ value: "running" },
+						{ value: "cycling" },
+						{ value: "gym" },
+						{ value: "swimming" },
+						{ value: "walking" },
+						{ value: "yoga" },
+						{ value: "boxing" },
+						{ value: "other" },
 					]}
 					register={register}
 					error={errors.training_types?.message}
@@ -196,30 +205,50 @@ export function CommunityPlatformsSection({ register, errors }: SectionProps) {
 			</h3>
 
 			<p className="text-sm text-neutral-600 max-w-prose">
-				Facebook Group and Community Chat are required so we can contact
-				you and add you to the main club group after approval.
+				Facebook Group join request is required so we can contact you
+				and add you to the club group after approval.
 			</p>
 
-			<div className="space-y-3">
+			<div className="flex gap-2">
 				<Checkbox
-					label="Facebook Group (Required)"
+					label="Sent Join Request to Facebook Group (Required)"
 					{...register("fb_group_requested")}
 					error={errors.fb_group_requested?.message}
 				/>
+				<a
+					href={MILE_365_FACEBOOK_GROUP_LINK}
+					target="_blank"
+					className="flex items-center justify-center"
+				>
+					<RiExternalLinkFill className="text-lg" />
+				</a>
 			</div>
 
 			<div className="space-y-3">
 				<p className="text-sm font-medium">
-					Other platforms you're part of
+					Follow or request to join at least one platform to stay
+					updated on club announcements. (Required)
 				</p>
 
 				<CheckboxGroup
 					name="platforms_followed"
 					options={[
-						"Facebook Page",
-						"Instagram",
-						"Tiktok",
-						"Strava Club",
+						{
+							value: "Facebook Page",
+							link: MILE_365_FACEBOOK_PAGE_LINK,
+						},
+						{
+							value: "Instagram",
+							link: MILE_365_INSTAGRAM_LINK,
+						},
+						{
+							value: "Tiktok",
+							link: MILE_365_TIKTOK_LINK,
+						},
+						{
+							value: "Strava Club",
+							link: MILE_365_STRAVA_LINK,
+						},
 					]}
 					register={register}
 					columns="grid-cols-2 sm:grid-cols-3"
@@ -229,7 +258,7 @@ export function CommunityPlatformsSection({ register, errors }: SectionProps) {
 
 			<div className="space-y-4">
 				<TextInput
-					placeholder="Facebook profile name used to join the group *"
+					placeholder="Social media display name*"
 					{...register("social_media_display_name")}
 					error={errors.social_media_display_name?.message}
 				/>
