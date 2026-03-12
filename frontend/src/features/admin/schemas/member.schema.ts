@@ -46,7 +46,16 @@ export const locationSchema = z.object({
 */
 export const trainingSchema = z.object({
 	training_types: z.array(
-		z.enum(["running", "gym", "hybrid", "cycling", "triathlon"]),
+		z.enum([
+			"running",
+			"cycling",
+			"gym",
+			"swimming",
+			"walking",
+			"yoga",
+			"boxing",
+			"other",
+		]),
 	),
 
 	experience_level: z

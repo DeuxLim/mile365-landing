@@ -121,10 +121,13 @@ export function TrainingProfileSection({ register, errors }: SectionProps) {
 					name="training_types"
 					options={[
 						"running",
-						"gym",
-						"hybrid",
 						"cycling",
-						"triathlon",
+						"gym",
+						"swimming",
+						"walking",
+						"yoga",
+						"boxing",
+						"other",
 					]}
 					register={register}
 					error={errors.training_types?.message}
