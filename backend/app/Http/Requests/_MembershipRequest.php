@@ -59,8 +59,8 @@ class _MembershipRequest extends FormRequest
             |--------------------------------------------------------------------------
             */
             'fb_group_requested' => 'required|boolean',
-            'platforms_joined' => 'nullable|array',
-            'platforms_joined.*' => 'string|max:50',
+            'platforms_followed' => 'nullable|array',
+            'platforms_followed.*' => 'string|max:50',
             'social_media_display_name' => 'required|string|max:255',
 
             /*

@@ -119,7 +119,7 @@ class MembershipRequestService
                 'goals' => $request->goals,
 
                 'fb_group_requested' => $request->fb_group_requested,
-                'platforms_joined' => $request->platforms_joined,
+                'platforms_followed' => $request->platforms_followed,
                 'social_media_display_name' => $request->social_media_display_name,
 
                 'emergency_contact_name' => $request->emergency_contact_name,

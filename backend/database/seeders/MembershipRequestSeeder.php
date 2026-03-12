@@ -42,7 +42,7 @@ class MembershipRequestSeeder extends Seeder
                         'goals',
 
                         'fb_group_requested',
-                        'platforms_joined',
+                        'platforms_followed',
                         'social_media_display_name',
 
                         'emergency_contact_name',

@@ -56,7 +56,7 @@ return new class extends Migration
             |--------------------------------------------------------------------------
             */
             $table->boolean('fb_group_requested')->default(false);
-            $table->json('platforms_joined')->nullable();
+            $table->json('platforms_followed')->nullable();
             $table->string('social_media_display_name')->nullable();
 
             /*

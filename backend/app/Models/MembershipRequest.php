@@ -53,7 +53,7 @@ class MembershipRequest extends Model
         |--------------------------------------------------------------------------
         */
         'fb_group_requested',
-        'platforms_joined',
+        'platforms_followed',
         'social_media_display_name',
 
         /*
@@ -106,7 +106,7 @@ class MembershipRequest extends Model
 
     protected $casts = [
         'training_types' => 'array',
-        'platforms_joined' => 'array',
+        'platforms_followed' => 'array',
         'birthdate' => 'date',
         'agreed_at' => 'datetime',
         'reviewed_at' => 'datetime',

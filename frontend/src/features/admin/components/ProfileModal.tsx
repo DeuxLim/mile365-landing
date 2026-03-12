@@ -152,9 +152,9 @@ export default function ProfileModal(props: Props) {
 						fb_group_requested:
 							p.community_platforms.fb_group_requested,
 						fb_page_joined: Array.isArray(
-							p.community_platforms.platforms_joined,
+							p.community_platforms.platforms_followed,
 						)
-							? p.community_platforms.platforms_joined.includes(
+							? p.community_platforms.platforms_followed.includes(
 									"Facebook Page",
 								)
 							: false,
@@ -449,7 +449,7 @@ export default function ProfileModal(props: Props) {
 										label="Other Platforms"
 										hint="Required. Member must have liked the Facebook Page."
 									>
-										{profile.community_platforms.platforms_joined?.join(
+										{profile.community_platforms.platforms_followed?.join(
 											", ",
 										) || "None"}
 									</Field>

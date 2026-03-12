@@ -36,7 +36,7 @@ export default function JoinForm() {
 		resolver: zodResolver(membershipRequestInputSchema),
 		defaultValues: {
 			training_types: [],
-			platforms_joined: [],
+			platforms_followed: [],
 		},
 	});
 

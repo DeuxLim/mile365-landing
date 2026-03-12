@@ -29,7 +29,7 @@ class Member extends Model
 
     protected $casts = [
         'training_types' => 'array',
-        'platforms_joined' => 'array',
+        'platforms_followed' => 'array',
         'birthdate' => 'date',
         'joined_at' => 'date',
     ];

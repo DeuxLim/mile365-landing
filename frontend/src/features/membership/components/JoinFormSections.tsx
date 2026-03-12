@@ -214,7 +214,7 @@ export function CommunityPlatformsSection({ register, errors }: SectionProps) {
 				</p>
 
 				<CheckboxGroup
-					name="platforms_joined"
+					name="platforms_followed"
 					options={[
 						"Facebook Page",
 						"Instagram",
@@ -223,7 +223,7 @@ export function CommunityPlatformsSection({ register, errors }: SectionProps) {
 					]}
 					register={register}
 					columns="grid-cols-2 sm:grid-cols-3"
-					error={errors.platforms_joined?.message}
+					error={errors.platforms_followed?.message}
 				/>
 			</div>
 

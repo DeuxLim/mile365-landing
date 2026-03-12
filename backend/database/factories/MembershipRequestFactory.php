@@ -54,7 +54,7 @@ class MembershipRequestFactory extends Factory
             'goals' => fake()->sentence(),
 
             'fb_group_requested' => fake()->boolean(80),
-            'platforms_joined' => [
+            'platforms_followed' => [
                 "Facebook Page",
                 "Instagram",
                 "TikTok",
