@@ -142,7 +142,7 @@ export default function MembersPage() {
 			</div>
 
 			{/* MOBILE CARD LIST */}
-			<div className="xl:hidden">
+			<div className="xl:hidden my-4">
 				<PaginatedCardList
 					rows={members}
 					getRowKey={(member) => member.id}
