@@ -90,12 +90,12 @@ export const communityPlatformsSchema = z.object({
 	}),
 	platforms_followed: z
 		.array(z.string())
-		.min(1, "Please select at least one other platform."),
+		.min(1, "Please follow or join at least one platform."),
 
 	social_media_display_name: z
 		.string()
 		.trim()
-		.min(1, "Facebook profile name is required."),
+		.min(1, "Social media display name is required."),
 });
 
 /*

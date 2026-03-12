@@ -56,7 +56,7 @@ return new class extends Migration
             |--------------------------------------------------------------------------
             */
             $table->boolean('fb_group_requested')->default(false);
-            $table->json('platforms_followed')->nullable();
+            $table->enum('platforms_followed', ['Facebook Page', 'Instagram', 'Tiktok', 'Strava Club'])->nullable();
             $table->string('social_media_display_name')->nullable();
 
             /*

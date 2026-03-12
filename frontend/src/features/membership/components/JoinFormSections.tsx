@@ -218,7 +218,7 @@ export function CommunityPlatformsSection({ register, errors }: SectionProps) {
 					options={[
 						"Facebook Page",
 						"Instagram",
-						"TikTok",
+						"Tiktok",
 						"Strava Club",
 					]}
 					register={register}

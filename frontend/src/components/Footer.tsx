@@ -42,7 +42,7 @@ export default function Footer() {
 						target="_blank"
 						className="hover:text-neutral-400 transition"
 					>
-						TikTok
+						Tiktok
 					</a>
 				</div>
 

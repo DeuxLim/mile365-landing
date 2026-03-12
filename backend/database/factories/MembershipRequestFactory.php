@@ -57,7 +57,7 @@ class MembershipRequestFactory extends Factory
             'platforms_followed' => [
                 "Facebook Page",
                 "Instagram",
-                "TikTok",
+                "Tiktok",
                 "Strava Club"
             ],
 
