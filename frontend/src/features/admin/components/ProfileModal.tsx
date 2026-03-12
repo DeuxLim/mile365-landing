@@ -441,7 +441,7 @@ export default function ProfileModal(props: Props) {
 								<Field label="Facebook Name">
 									{
 										profile.community_platforms
-											.facebook_profile_name
+											.social_media_display_name
 									}
 								</Field>
 								<div className="sm:col-span-2">

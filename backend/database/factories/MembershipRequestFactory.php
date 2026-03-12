@@ -61,7 +61,7 @@ class MembershipRequestFactory extends Factory
                 "Strava Club"
             ],
 
-            'facebook_profile_name' => fake()->name(),
+            'social_media_display_name' => fake()->name(),
 
             'emergency_contact_name' => fake()->name(),
             'emergency_contact_phone' => fake()->phoneNumber(),

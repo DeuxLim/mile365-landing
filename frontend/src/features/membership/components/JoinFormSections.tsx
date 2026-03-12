@@ -230,8 +230,8 @@ export function CommunityPlatformsSection({ register, errors }: SectionProps) {
 			<div className="space-y-4">
 				<TextInput
 					placeholder="Facebook profile name used to join the group *"
-					{...register("facebook_profile_name")}
-					error={errors.facebook_profile_name?.message}
+					{...register("social_media_display_name")}
+					error={errors.social_media_display_name?.message}
 				/>
 			</div>
 		</section>

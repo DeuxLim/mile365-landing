@@ -61,7 +61,7 @@ class _MembershipRequest extends FormRequest
             'fb_group_requested' => 'required|boolean',
             'platforms_joined' => 'nullable|array',
             'platforms_joined.*' => 'string|max:50',
-            'facebook_profile_name' => 'required|string|max:255',
+            'social_media_display_name' => 'required|string|max:255',
 
             /*
             |--------------------------------------------------------------------------

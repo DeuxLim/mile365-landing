@@ -92,7 +92,7 @@ export const communityPlatformsSchema = z.object({
 		.array(z.string())
 		.min(1, "Please select at least one other platform."),
 
-	facebook_profile_name: z
+	social_media_display_name: z
 		.string()
 		.trim()
 		.min(1, "Facebook profile name is required."),
