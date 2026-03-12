@@ -428,7 +428,7 @@ export default function ProfileModal(props: Props) {
 						<>
 							<SectionCard title="Platforms">
 								<Field
-									label="FB Group Joined"
+									label="FB Group Requested To Join"
 									hint="Required. Member must have requested to join the Facebook Group."
 								>
 									<Badge
@@ -446,8 +446,8 @@ export default function ProfileModal(props: Props) {
 								</Field>
 								<div className="sm:col-span-2">
 									<Field
-										label="Other Platforms"
-										hint="Required. Member must have liked the Facebook Page."
+										label="Socials"
+										hint="Required. Member must have followed atleast one."
 									>
 										{profile.community_platforms.platforms_followed?.join(
 											", ",
