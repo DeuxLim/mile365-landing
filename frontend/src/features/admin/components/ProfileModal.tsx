@@ -444,9 +444,6 @@ export default function ProfileModal(props: Props) {
 											.facebook_profile_name
 									}
 								</Field>
-								<Field label="Messenger Name">
-									{profile.community_platforms.messenger_name}
-								</Field>
 								<div className="sm:col-span-2">
 									<Field
 										label="Other Platforms"

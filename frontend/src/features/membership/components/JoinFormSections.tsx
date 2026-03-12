@@ -233,12 +233,6 @@ export function CommunityPlatformsSection({ register, errors }: SectionProps) {
 					{...register("facebook_profile_name")}
 					error={errors.facebook_profile_name?.message}
 				/>
-
-				<TextInput
-					placeholder="Messenger display name *"
-					{...register("messenger_name")}
-					error={errors.messenger_name?.message}
-				/>
 			</div>
 		</section>
 	);

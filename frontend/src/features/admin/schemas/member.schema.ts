@@ -96,10 +96,6 @@ export const communityPlatformsSchema = z.object({
 		.string()
 		.trim()
 		.min(1, "Facebook profile name is required."),
-	messenger_name: z
-		.string()
-		.trim()
-		.min(1, "Messenger display name is required."),
 });
 
 /*

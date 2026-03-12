@@ -121,7 +121,6 @@ class MembershipRequestService
                 'fb_group_requested' => $request->fb_group_requested,
                 'platforms_joined' => $request->platforms_joined,
                 'facebook_profile_name' => $request->facebook_profile_name,
-                'messenger_name' => $request->messenger_name,
 
                 'emergency_contact_name' => $request->emergency_contact_name,
                 'emergency_contact_phone' => $request->emergency_contact_phone,

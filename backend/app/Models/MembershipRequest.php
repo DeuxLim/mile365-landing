@@ -55,7 +55,6 @@ class MembershipRequest extends Model
         'fb_group_requested',
         'platforms_joined',
         'facebook_profile_name',
-        'messenger_name',
 
         /*
         |--------------------------------------------------------------------------

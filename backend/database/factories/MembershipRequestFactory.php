@@ -62,7 +62,6 @@ class MembershipRequestFactory extends Factory
             ],
 
             'facebook_profile_name' => fake()->name(),
-            'messenger_name' => fake()->name(),
 
             'emergency_contact_name' => fake()->name(),
             'emergency_contact_phone' => fake()->phoneNumber(),
