@@ -16,7 +16,6 @@ import { z } from "zod";
 |--------------------------------------------------------------------------
 */
 export const adminSchema = z.object({
-	agreed_at: z.string().datetime().optional(),
 	status: z
 		.enum(["pending", "approved", "rejected", "waitlisted"], {
 			message: "Please select a valid status.",

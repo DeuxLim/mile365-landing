@@ -161,6 +161,7 @@ export const waiverSchema = z.object({
 	media_consent: z.boolean().refine((value) => value === true, {
 		message: "Please confirm media consent.",
 	}),
+	agreed_at: z.string().datetime().optional(),
 });
 
 export const memberSchema = z.object({

@@ -263,7 +263,7 @@ export default function ProfileModal(props: Props) {
 				<div className="flex items-start justify-between gap-4 px-5 sm:px-7 pt-6 pb-4 border-b border-zinc-200 bg-white">
 					<div className="flex items-center gap-4">
 						{/* Avatar */}
-						<div className="w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-full bg-gradient-to-br from-zinc-700 to-zinc-900 ring-1 ring-zinc-200 flex items-center justify-center text-base font-bold text-white tracking-wide">
+						<div className="w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-full bg-linear-to-br from-zinc-700 to-zinc-900 ring-1 ring-zinc-200 flex items-center justify-center text-base font-bold text-white tracking-wide">
 							{initials}
 						</div>
 
@@ -563,6 +563,13 @@ export default function ProfileModal(props: Props) {
 										value={profile.waiver.media_consent}
 									/>
 								</Field>
+								<Field label="Agreed At">
+									{props.profile.waiver.agreed_at
+										? formatDate(
+												props.profile.waiver.agreed_at,
+											)
+										: "N/A"}
+								</Field>
 							</SectionCard>
 						</>
 					)}
@@ -585,9 +592,6 @@ export default function ProfileModal(props: Props) {
 											props.profile.review.reviewed_at,
 										)
 									: "N/A"}
-							</Field>
-							<Field label="Agreed At">
-								{props.profile.review.agreed_at ?? "N/A"}
 							</Field>
 							<div className="sm:col-span-2">
 								<Field label="Admin Notes">
