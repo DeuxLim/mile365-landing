@@ -63,23 +63,6 @@
                                     </td>
                                 </tr>
 
-                                <tr>
-                                    <td style="padding:6px 0;"><strong>Experience Level</strong></td>
-                                    <td style="padding:6px 0;">{{ $membershipRequest->experience_level ?? 'N/A' }}</td>
-                                </tr>
-
-                                <tr>
-                                    <td style="padding:6px 0;"><strong>Weekly Distance</strong></td>
-                                    <td style="padding:6px 0;">{{ $membershipRequest->weekly_distance_km ?? 'N/A' }} km
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td style="padding:6px 0;"><strong>Preferred Run Time</strong></td>
-                                    <td style="padding:6px 0;">{{ $membershipRequest->preferred_run_time ?? 'N/A' }}
-                                    </td>
-                                </tr>
-
                             </table>
                         </td>
                     </tr>
@@ -89,6 +72,28 @@
                             Please log in to the admin panel to review, approve, or reject this request.
                         </td>
                     </tr>
+
+                    @php
+                        $frontendUrl = rtrim((string) config('app.frontend_url'), '/');
+                        $adminLoginUrl = $frontendUrl ? ($frontendUrl . '/admin/login') : null;
+                    @endphp
+
+                    @if ($adminLoginUrl)
+                        <tr>
+                            <td style="padding-top:18px; padding-bottom:6px;">
+                                <a href="{{ $adminLoginUrl }}"
+                                    style="display:inline-block;padding:12px 20px;background:#111827;color:#ffffff;text-decoration:none;border-radius:4px;font-size:14px;font-weight:bold;">
+                                    Open Admin Dashboard
+                                </a>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style="padding-top:8px; font-size:13px; color:#777; word-break:break-all;">
+                                {{ $adminLoginUrl }}
+                            </td>
+                        </tr>
+                    @endif
 
                     <tr>
                         <td style="padding-top:28px; font-size:14px; color:#333;">

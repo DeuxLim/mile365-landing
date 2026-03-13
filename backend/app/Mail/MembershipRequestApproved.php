@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\MembershipRequest;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -16,7 +17,7 @@ class MembershipRequestApproved extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct(public MembershipRequest $membershipRequest)
     {
         //
     }

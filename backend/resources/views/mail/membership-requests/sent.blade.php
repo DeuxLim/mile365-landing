@@ -68,47 +68,6 @@
                                         {{ $membershipRequest->province ?? '' }}
                                     </td>
                                 </tr>
-
-                                <tr>
-                                    <td style="padding:6px 0;"><strong>Experience Level</strong></td>
-                                    <td style="padding:6px 0;">{{ $membershipRequest->experience_level ?? 'N/A' }}</td>
-                                </tr>
-
-                                <tr>
-                                    <td style="padding:6px 0;"><strong>Weekly Distance</strong></td>
-                                    <td style="padding:6px 0;">{{ $membershipRequest->weekly_distance_km ?? 'N/A' }} km
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td style="padding:6px 0;"><strong>Preferred Run Time</strong></td>
-                                    <td style="padding:6px 0;">{{ $membershipRequest->preferred_run_time ?? 'N/A' }}
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td style="padding:6px 0;"><strong>How They Heard About MILE 365</strong></td>
-                                    <td style="padding:6px 0;">{{ $membershipRequest->how_did_you_hear ?? 'N/A' }}</td>
-                                </tr>
-
-                                <tr>
-                                    <td style="padding:6px 0;"><strong>Agreed to Club Rules</strong></td>
-                                    <td style="padding:6px 0;">{{ $membershipRequest->agreed_to_rules ? 'Yes' : 'No' }}
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td style="padding:6px 0;"><strong>Safety Commitment</strong></td>
-                                    <td style="padding:6px 0;">
-                                        {{ $membershipRequest->safety_commitment ? 'Confirmed' : 'Not Confirmed' }}
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td style="padding:6px 0;"><strong>Media Consent</strong></td>
-                                    <td style="padding:6px 0;">
-                                        {{ $membershipRequest->media_consent ? 'Granted' : 'Not Granted' }}</td>
-                                </tr>
                             </table>
                         </td>
                     </tr>

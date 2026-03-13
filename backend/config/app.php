@@ -126,6 +126,7 @@ return [
     /**
      * Project Specific Config
      */
+    'frontend_url' => env('FRONTEND_URL'),
     'messenger_link' => env('MESSENGER_LINK'),
-    'facebook_page' => env('FACEBOOK_PAGE_LINK')
+    'facebook_page' => env('FACEBOOK_PAGE_LINK'),
 ];
