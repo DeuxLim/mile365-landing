@@ -307,7 +307,7 @@ export function MembershipExpectationsSection({
 			</h3>
 
 			<Checkbox
-				label="I understand I must attend at least 2 sessions before official membership"
+				label="I understand I must attend at least 2 sessions (Trial Membership) before official membership"
 				{...register("attendance_commitment")}
 				error={errors.attendance_commitment?.message}
 			/>

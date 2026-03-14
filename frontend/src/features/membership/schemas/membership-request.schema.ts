@@ -17,7 +17,7 @@ import { z } from "zod";
 */
 export const adminSchema = z.object({
 	status: z
-		.enum(["pending", "approved", "rejected", "waitlisted"], {
+		.enum(["pending", "approved", "rejected", "waitlisted", "trial"], {
 			message: "Please select a valid status.",
 		})
 		.default("pending"),

@@ -176,7 +176,9 @@ export default function JoinForm() {
 						<span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
 					)}
 
-					{isPending ? "Submitting..." : "Submit Application"}
+					{isPending
+						? "Submitting..."
+						: "Submit Trial Membership Application"}
 				</button>
 			</div>
 
@@ -192,7 +194,9 @@ export default function JoinForm() {
 								<span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
 							)}
 
-							{isPending ? "Submitting..." : "Submit Application"}
+							{isPending
+								? "Submitting..."
+								: "Submit Trial Membership Application"}
 						</button>
 					</div>
 				</div>

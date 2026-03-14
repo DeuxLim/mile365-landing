@@ -99,7 +99,7 @@ export default function Sidebar() {
 												>
 													<Icon className="text-xl shrink-0" />
 													{sidebarOpen && (
-														<div className="text-sm">
+														<div className="text-sm text-nowrap">
 															{item.label}
 														</div>
 													)}
