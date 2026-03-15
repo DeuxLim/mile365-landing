@@ -9,12 +9,12 @@ const adminNav = [
 		icon: MdOutlineDashboard,
 	},
 	{
-		label: "Requests",
+		label: "Membership Requests",
 		path: "membership-requests",
 		icon: MdOutlineGroupAdd,
 	},
 	{
-		label: "Members",
+		label: "Official Members",
 		path: "members",
 		icon: MdOutlineGroups3,
 	},
