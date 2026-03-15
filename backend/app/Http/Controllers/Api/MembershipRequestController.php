@@ -18,11 +18,16 @@ class MembershipRequestController extends Controller
         $this->membershipRequestService = $membershipRequestService;
     }
 
+    /**
+     * Save membership request
+     */
     public function store(_MembershipRequest $request): JsonResponse
     {
+        /* Validate */
         $membership = $this->membershipRequestService
             ->submitApplication($request->validated());
 
+        /* Respond */
         return response()->json([
             'message' => 'Application submitted successfully',
             'data' => [
@@ -32,69 +37,53 @@ class MembershipRequestController extends Controller
         ], 201);
     }
 
+    /**
+     * List membership requests
+     */
     public function index(Request $request)
     {
+        /* Validate */
         $status = $request->string('status')->trim()->toString();
-        $allowedStatuses = ['pending', 'approved', 'rejected', 'waitlisted'];
+        $allowedStatuses = ['pending', 'approved', 'rejected', 'waitlisted', 'trial'];
         if (!in_array($status, $allowedStatuses, true)) {
             $status = null;
         }
 
+        /* Set search */
         $search = $request->string('search')->trim()->toString();
 
+        /* Call service */
         $membershipRequests = $this->membershipRequestService->getAllRequests(
             $status,
             $search
         );
 
+        /* Respond */
         return MembershipRequestResource::collection($membershipRequests);
     }
 
-    public function approve(Request $request, int $id): JsonResponse
+    /**
+     * Update membership request status
+     */
+    public function updateMembershipRequestStatus(Request $request, int $id)
     {
-        $admin = $request->user();
-
-        if (!$admin) {
-            abort(401, 'Unauthenticated.');
-        }
-
+        /* Validate inputs */
         $validated = $request->validate([
             'admin_notes' => ['nullable', 'string', 'max:1000'],
+            'status' => ['required', 'in:pending,trial,rejected,approved,waitlist']
         ]);
 
-        $membership = $this->membershipRequestService->approveRequest(
+        /* Update Logic */
+        $updatedMembershipRequest = $this->membershipRequestService->updateMembershipRequestStatus(
             $id,
-            $admin->id,
-            $validated['admin_notes'] ?? null
+            $request->user()->id,
+            $validated,
         );
 
+        /* Return response */
         return response()->json([
-            'message' => 'Application approved',
-            'data' => new MembershipRequestResource($membership),
-        ], 200);
-    }
-
-    public function reject(Request $request, int $id): JsonResponse
-    {
-        $admin = $request->user();
-
-        if (!$admin) {
-            abort(401, 'Unauthenticated.');
-        }
-
-        $validated = $request->validate([
-            'admin_notes' => ['nullable', 'string', 'max:1000'],
+            'message' => 'Application status updated.',
+            'data' => new MembershipRequestResource($updatedMembershipRequest),
         ]);
-
-        $membership = $this->membershipRequestService->rejectRequest(
-            $id,
-            $admin->id,
-            $validated['admin_notes'] ?? null
-        );
-
-        return response()->json([
-            'message' => 'Application rejected',
-            'data' => new MembershipRequestResource($membership),
-        ], 200);
     }
 }
