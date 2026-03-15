@@ -101,7 +101,7 @@ return new class extends Migration
             | ADMIN REVIEW SYSTEM
             |--------------------------------------------------------------------------
             */
-            $table->enum('status', ['pending', 'approved', 'rejected', 'waitlisted'])->default('pending');
+            $table->enum('status', ['pending', 'approved', 'rejected', 'waitlisted', 'trial'])->default('pending');
             $table->foreignId('reviewed_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamp('reviewed_at')->nullable();
             $table->text('admin_notes')->nullable();
