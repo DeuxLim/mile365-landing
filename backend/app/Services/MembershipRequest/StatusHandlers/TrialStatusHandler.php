@@ -4,7 +4,6 @@ namespace App\Services\MembershipRequest\StatusHandlers;
 
 use App\Events\MembershipRequestTrial;
 use App\Models\MembershipRequest;
-use InvalidStatusTransitionException;
 
 class TrialStatusHandler implements StatusHandlerInterface
 {

@@ -6,7 +6,6 @@ use App\Events\MembershipRequestApproved;
 use App\Models\Member;
 use App\Models\MembershipRequest;
 use Illuminate\Validation\ValidationException;
-use InvalidStatusTransitionException;
 
 class ApprovedStatusHandler implements StatusHandlerInterface
 {

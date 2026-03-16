@@ -4,13 +4,12 @@ namespace App\Services\MembershipRequest\StatusHandlers;
 
 use App\Events\MembershipRequestRejected;
 use App\Models\MembershipRequest;
-use InvalidStatusTransitionException;
 
 class RejectedStatusHandler implements StatusHandlerInterface
 {
     public function validate(MembershipRequest $membershipRequest, array $inputs)
     {
-        if ($membershipRequest->status !== "pending") {
+        if (!in_array($membershipRequest->status, ['pending', 'trial'], true)) {
             return throw new InvalidStatusTransitionException("Status cannot be rejected if previous status is not 'pending'");
         }
     }
