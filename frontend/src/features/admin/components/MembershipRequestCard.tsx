@@ -1,5 +1,6 @@
 import type { MembershipRequest } from "@/features/membership/types/membership-request.types";
 import { getAge } from "@/utils/utils";
+import { getMembershipRequestStatusClasses } from "@/features/admin/utils/membershipRequestStatusStyles";
 
 type Props = {
 	request: MembershipRequest;
@@ -15,15 +16,9 @@ export default function MembershipRequestCard({ request, onView }: Props) {
 				</div>
 
 				<span
-					className={`px-2 py-1 rounded text-xs font-medium capitalize ${
-						request.review.status === "pending"
-							? "bg-yellow-100 text-yellow-700"
-							: request.review.status === "approved"
-								? "bg-green-100 text-green-700"
-								: request.review.status === "waitlisted"
-									? "bg-blue-100 text-blue-700"
-									: "bg-red-100 text-red-700"
-					}`}
+					className={`px-2 py-1 rounded text-xs font-medium capitalize ${getMembershipRequestStatusClasses(
+						request.review.status,
+					)}`}
 				>
 					{request.review.status}
 				</span>

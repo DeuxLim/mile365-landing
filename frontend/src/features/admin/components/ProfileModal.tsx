@@ -5,6 +5,7 @@ import type {
 	MembershipRequestStatus,
 } from "@/features/membership/types/membership-request.types";
 import { formatDate } from "@/utils/utils";
+import { getMembershipRequestStatusClasses } from "@/features/admin/utils/membershipRequestStatusStyles";
 
 type ReadonlyProps = {
 	variant: "readonly";
@@ -28,17 +29,10 @@ type Props = ReadonlyProps | ReviewProps;
 // --- Sub-components ---
 
 function StatusPill({ status }: { status: string }) {
-	const styles: Record<string, string> = {
-		approved: "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200",
-		rejected: "bg-red-50 text-red-700 ring-1 ring-red-200",
-		waitlisted: "bg-sky-50 text-sky-700 ring-1 ring-sky-200",
-		pending: "bg-amber-50 text-amber-700 ring-1 ring-amber-200",
-	};
-
 	return (
 		<span
 			className={`px-3 py-1 rounded-full text-[11px] font-semibold tracking-widest uppercase ${
-				styles[status] ?? styles.pending
+				getMembershipRequestStatusClasses(status, "pill")
 			}`}
 		>
 			{status}

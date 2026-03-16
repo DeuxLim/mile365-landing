@@ -18,6 +18,7 @@ import PaginatedDataTable, {
 import ProfileModal from "@/features/admin/components/ProfileModal";
 import PaginatedCardList from "../components/PaginatedCardsList";
 import MembershipRequestCard from "../components/MembershipRequestCard";
+import { getMembershipRequestStatusClasses } from "@/features/admin/utils/membershipRequestStatusStyles";
 
 export default function MembershipRequestsPage() {
 	const queryClient = useQueryClient();
@@ -68,17 +69,9 @@ export default function MembershipRequestsPage() {
 				header: "Status",
 				renderCell: (req) => (
 					<span
-						className={`px-2 py-1 rounded text-xs font-medium capitalize ${
-							req.review.status === "pending"
-								? "bg-yellow-100 text-yellow-700"
-								: req.review.status === "approved"
-									? "bg-green-100 text-green-700"
-									: req.review.status === "waitlisted"
-										? "bg-blue-100 text-blue-700"
-										: req.review.status === "trial"
-											? "bg-blue-100 text-blue-700"
-											: "bg-red-100 text-red-700"
-						}`}
+						className={`px-2 py-1 rounded text-xs font-medium capitalize ${getMembershipRequestStatusClasses(
+							req.review.status,
+						)}`}
 					>
 						{req.review.status}
 					</span>
