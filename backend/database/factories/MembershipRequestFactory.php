@@ -87,8 +87,6 @@ class MembershipRequestFactory extends Factory
 
             'status' => fake()->randomElement([
                 'pending',
-                'approved',
-                'rejected'
             ]),
         ];
     }
