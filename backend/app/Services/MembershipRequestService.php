@@ -7,11 +7,11 @@ use App\Events\MembershipRequestRejected;
 use App\Models\MembershipRequest;
 use App\Services\MembershipRequest\StatusHandlers\ApprovedStatusHandler;
 use App\Services\MembershipRequest\StatusHandlers\RejectedStatusHandler;
+use App\Services\MembershipRequest\StatusHandlers\StatusHandlerInterface;
 use App\Services\MembershipRequest\StatusHandlers\TrialStatusHandler;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use InvalidArgumentException;
-use StatusHandlerInterface;
 
 class MembershipRequestService
 {

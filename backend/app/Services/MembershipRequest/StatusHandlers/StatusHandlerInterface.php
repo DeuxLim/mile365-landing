@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Services\MembershipRequest\StatusHandlers;
+
 use App\Models\MembershipRequest;
 
 interface StatusHandlerInterface

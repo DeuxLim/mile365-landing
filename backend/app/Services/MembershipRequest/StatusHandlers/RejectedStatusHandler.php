@@ -5,7 +5,6 @@ namespace App\Services\MembershipRequest\StatusHandlers;
 use App\Events\MembershipRequestRejected;
 use App\Models\MembershipRequest;
 use InvalidStatusTransitionException;
-use StatusHandlerInterface;
 
 class RejectedStatusHandler implements StatusHandlerInterface
 {
