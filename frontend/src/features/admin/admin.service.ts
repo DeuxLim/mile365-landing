@@ -5,7 +5,10 @@ import type {
 	AdminUser,
 } from "./types/admin.types";
 import type { PaginatedResponse } from "./types/pagination.types";
-import type { MembershipRequest } from "@/features/membership/types/membership-request.types";
+import type {
+	MembershipRequest,
+	MembershipRequestStatus,
+} from "@/features/membership/types/membership-request.types";
 import type { Member } from "./types/member.types";
 
 export const submitLoginCredentials = async (
@@ -69,9 +72,9 @@ export const updateMembershipRequestStatus = async ({
 	adminNote,
 	status,
 }: {
-	membershipRequestId: string;
+	membershipRequestId: number;
 	adminNote?: string;
-	status: "pending" | "trial" | "approved" | "rejected";
+	status: MembershipRequestStatus;
 }): Promise<MembershipRequest> => {
 	const response = await api.patch(
 		`/admin/membership-requests/${membershipRequestId}/status`,
