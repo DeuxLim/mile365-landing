@@ -383,26 +383,13 @@ export function WaiverAgreementSection({ register, errors }: SectionProps) {
 						<>
 							I have read and agree to the{" "}
 							<a
-								href="/waiver-and-terms#waiver"
+								href="/waiver-and-terms"
+								target="_blank"
 								className="underline"
 							>
-								Liability Waiver
+								Liability Waiver, Safety Policy, and
+								Participation Terms.
 							</a>
-							,{" "}
-							<a
-								href="/waiver-and-terms#safety"
-								className="underline"
-							>
-								Safety Policy
-							</a>
-							, and{" "}
-							<a
-								href="/waiver-and-terms#terms"
-								className="underline"
-							>
-								Participation Terms
-							</a>
-							.
 						</>
 					}
 					{...register("agreed_to_rules")}
