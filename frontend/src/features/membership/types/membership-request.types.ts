@@ -15,3 +15,9 @@ export type LaravelValidationError = {
 	message: string;
 	errors: Record<string, string[]>;
 };
+export type MembershipRequestStatus =
+	| "pending"
+	| "trial"
+	| "approved"
+	| "rejected"
+	| "waitlisted";
