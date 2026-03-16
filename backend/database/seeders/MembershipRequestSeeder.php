@@ -11,7 +11,7 @@ class MembershipRequestSeeder extends Seeder
     public function run(): void
     {
         MembershipRequest::factory()
-            ->count(50)
+            ->count(5)
             ->create()
             ->each(function ($request) {
                 if ($request->status !== "approved") {
