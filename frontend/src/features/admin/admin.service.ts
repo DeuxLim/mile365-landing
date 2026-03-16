@@ -24,6 +24,11 @@ export const getAuthenticatedAdmin = async (): Promise<AdminUser> => {
 	return response.data.user;
 };
 
+export const logoutAdmin = async () => {
+	const response = await api.post("/admin/logout");
+	return response.data;
+};
+
 export const getMembershipRequests = async (
 	page: number,
 	options?: { status?: string; search?: string },
@@ -59,36 +64,18 @@ export const getMembers = async (
 	return response.data;
 };
 
-export const logoutAdmin = async () => {
-	const response = await api.post("/admin/logout");
-	return response.data;
-};
-
-export const approveMembershipRequest = async ({
+export const updateMembershipRequestStatus = async ({
 	membershipRequestId,
 	adminNote,
+	status,
 }: {
 	membershipRequestId: string;
-	adminNote: string;
-}) => {
+	adminNote?: string;
+	status: "pending" | "trial" | "approved" | "rejected";
+}): Promise<MembershipRequest> => {
 	const response = await api.patch(
-		`/admin/membership-requests/${membershipRequestId}/approve`,
-		{ admin_notes: adminNote },
-	);
-
-	return response.data;
-};
-
-export const rejectMembershipRequest = async ({
-	membershipRequestId,
-	adminNote,
-}: {
-	membershipRequestId: string;
-	adminNote: string;
-}) => {
-	const response = await api.patch(
-		`/admin/membership-requests/${membershipRequestId}/reject`,
-		{ admin_notes: adminNote },
+		`/admin/membership-requests/${membershipRequestId}/status`,
+		{ admin_notes: adminNote, status: status },
 	);
 
 	return response.data;
