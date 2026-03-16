@@ -2,12 +2,12 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type {
 	LaravelValidationError,
 	MembershipRequest,
+	MembershipRequestStatus,
 } from "@/features/membership/types/membership-request.types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-	approveMembershipRequest,
 	getMembershipRequests,
-	rejectMembershipRequest,
+	updateMembershipRequestStatus,
 } from "../admin.service";
 import { getAge } from "@/utils/utils.js";
 import type { AxiosError } from "axios";
@@ -75,7 +75,9 @@ export default function MembershipRequestsPage() {
 									? "bg-green-100 text-green-700"
 									: req.review.status === "waitlisted"
 										? "bg-blue-100 text-blue-700"
-										: "bg-red-100 text-red-700"
+										: req.review.status === "trial"
+											? "bg-blue-100 text-blue-700"
+											: "bg-red-100 text-red-700"
 						}`}
 					>
 						{req.review.status}
@@ -137,35 +139,15 @@ export default function MembershipRequestsPage() {
 		placeholderData: (previous) => previous,
 	});
 
-	const approveMutation = useMutation({
-		mutationFn: approveMembershipRequest,
+	const updateMembershipRequestMutation = useMutation({
+		mutationFn: updateMembershipRequestStatus,
 
 		onSuccess: () => {
 			queryClient.invalidateQueries({
 				queryKey: ["membershipRequests"],
 			});
 
-			toast.success("Request approved");
-			setSelected(null);
-			setAdminNote("");
-		},
-
-		onError: (error: AxiosError<LaravelValidationError>) => {
-			toast.error(
-				error.response?.data.message ?? "Unexpected error occured.",
-			);
-		},
-	});
-
-	const rejectMutation = useMutation({
-		mutationFn: rejectMembershipRequest,
-
-		onSuccess: () => {
-			queryClient.invalidateQueries({
-				queryKey: ["membershipRequests"],
-			});
-
-			toast.success("Request rejected");
+			toast.success("Status updated!");
 			setSelected(null);
 			setAdminNote("");
 		},
@@ -178,22 +160,14 @@ export default function MembershipRequestsPage() {
 	});
 
 	const handleMembershipRequestAction = useCallback(
-		(id: string, action: string) => {
-			if (action === "approve") {
-				approveMutation.mutate({
-					membershipRequestId: id,
-					adminNote,
-				});
-			}
-
-			if (action === "reject") {
-				rejectMutation.mutate({
-					membershipRequestId: id,
-					adminNote,
-				});
-			}
+		(membershipRequestId: number, status: MembershipRequestStatus) => {
+			updateMembershipRequestMutation.mutate({
+				membershipRequestId,
+				status,
+				adminNote,
+			});
 		},
-		[approveMutation, rejectMutation, adminNote],
+		[updateMembershipRequestMutation, adminNote],
 	);
 
 	const handleStatusSelection = useCallback((status: string) => {
@@ -235,9 +209,10 @@ export default function MembershipRequestsPage() {
 						value: selectedStatus,
 						onChange: handleStatusSelection,
 						tabs: [
+							{ label: "Pending", value: "pending" },
+							{ label: "Trial", value: "trial" },
 							{ label: "Approved", value: "approved" },
 							{ label: "Rejected", value: "rejected" },
-							{ label: "Pending", value: "pending" },
 						],
 					}}
 					pagination={{
@@ -271,9 +246,10 @@ export default function MembershipRequestsPage() {
 						value: selectedStatus,
 						onChange: handleStatusSelection,
 						tabs: [
+							{ label: "Pending", value: "pending" },
+							{ label: "Trial", value: "trial" },
 							{ label: "Approved", value: "approved" },
 							{ label: "Rejected", value: "rejected" },
-							{ label: "Pending", value: "pending" },
 						],
 					}}
 					pagination={{
@@ -289,16 +265,13 @@ export default function MembershipRequestsPage() {
 					variant="review"
 					profile={selected}
 					onClose={() => setSelected(null)}
-					onReject={() =>
+					onStatusUpdate={(
+						membershipRequestId: number,
+						status: MembershipRequestStatus,
+					) =>
 						handleMembershipRequestAction(
-							selected.id.toString(),
-							"reject",
-						)
-					}
-					onApprove={() =>
-						handleMembershipRequestAction(
-							selected.id.toString(),
-							"approve",
+							membershipRequestId,
+							status,
 						)
 					}
 					setAdminNote={setAdminNote}

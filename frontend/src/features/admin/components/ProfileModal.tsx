@@ -1,6 +1,9 @@
 import { useState } from "react";
 import type { Member } from "@/features/admin/types/member.types";
-import type { MembershipRequest } from "@/features/membership/types/membership-request.types";
+import type {
+	MembershipRequest,
+	MembershipRequestStatus,
+} from "@/features/membership/types/membership-request.types";
 import { formatDate } from "@/utils/utils";
 
 type ReadonlyProps = {
@@ -13,8 +16,10 @@ type ReviewProps = {
 	variant: "review";
 	profile: MembershipRequest;
 	onClose: () => void;
-	onApprove: () => void;
-	onReject: () => void;
+	onStatusUpdate: (
+		membershipRequestId: number,
+		status: MembershipRequestStatus,
+	) => void;
 	setAdminNote: (note: string) => void;
 };
 
@@ -173,11 +178,14 @@ export default function ProfileModal(props: Props) {
 			: [];
 
 	// Called when admin clicks Approve
-	function handleApproveClick() {
-		if (unagreedFields.length > 0) {
+	function handleStatusUpdate(
+		status: MembershipRequestStatus,
+		approveWarningShown?: boolean,
+	) {
+		if (unagreedFields.length > 0 && !approveWarningShown) {
 			setShowApproveWarning(true);
 		} else if (props.variant === "review") {
-			props.onApprove();
+			props.onStatusUpdate(props.profile.id, status);
 		}
 	}
 
@@ -246,7 +254,16 @@ export default function ProfileModal(props: Props) {
 								<button
 									onClick={() => {
 										setShowApproveWarning(false);
-										props.onApprove();
+										handleStatusUpdate(
+											props.profile.review.status ===
+												"pending"
+												? "trial"
+												: props.profile.review
+															.status === "trial"
+													? "approved"
+													: "approved",
+											true,
+										);
 									}}
 									className="flex-1 px-4 py-2 rounded-lg text-sm font-semibold bg-zinc-900 text-white hover:bg-zinc-700 transition"
 								>
@@ -632,20 +649,36 @@ export default function ProfileModal(props: Props) {
 							Close
 						</button>
 
+						{/* Pending to trial */}
 						{props.variant === "review" &&
-							props.profile.review.status === "pending" && (
+							(props.profile.review.status === "pending" ||
+								props.profile.review.status === "trial") && (
 								<>
 									<button
-										onClick={props.onReject}
+										onClick={() =>
+											handleStatusUpdate("rejected", true)
+										}
 										className="px-4 py-2 rounded-lg text-sm font-medium text-red-600 border border-red-200 hover:bg-red-50 transition"
 									>
 										Reject
 									</button>
 									<button
-										onClick={handleApproveClick}
+										onClick={() =>
+											handleStatusUpdate(
+												props.profile.review.status ===
+													"pending"
+													? "trial"
+													: "approved",
+											)
+										}
 										className="px-5 py-2 rounded-lg text-sm font-semibold bg-zinc-900 text-white hover:bg-zinc-700 transition"
 									>
-										Approve
+										Approve{" "}
+										{props.profile.review.status ===
+										"pending"
+											? "Trial"
+											: "Official"}{" "}
+										Membership
 									</button>
 								</>
 							)}
