@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { TbX } from "react-icons/tb";
 
 type MobileMenuProps = {
@@ -93,19 +93,35 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
 
 				<div className="w-12 h-px bg-white/20 my-4" />
 
-				<button
-					onClick={() => goToSection("join")}
-					className={`
-						mt-4 px-8 py-3 text-xs uppercase tracking-widest
+				<div className="flex flex-col gap-4">
+					<Link
+						to="/admin/login"
+						className={`
+						px-8 py-3 text-xs uppercase tracking-widest
+						border-white
+						hover:bg-white hover:text-black
+						transition-all duration-200
+						${open ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}
+						`}
+						style={{ transitionDelay: `${links.length * 20}ms` }}
+					>
+						Admin Portal
+					</Link>
+
+					<button
+						onClick={() => goToSection("join")}
+						className={`
+						px-8 py-3 text-xs uppercase tracking-widest
 						border border-white
 						hover:bg-white hover:text-black
 						transition-all duration-300
 						${open ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}
-					`}
-					style={{ transitionDelay: `${links.length * 80}ms` }}
-				>
-					Join Mile 365
-				</button>
+						`}
+						style={{ transitionDelay: `${links.length * 20}ms` }}
+					>
+						Join Mile 365
+					</button>
+				</div>
 			</div>
 		</div>,
 		document.body,
