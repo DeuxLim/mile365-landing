@@ -1,5 +1,9 @@
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 import adminNav from "../admin-nav";
+import { useAuthenticatedAdmin } from "../hooks/useAuthenticatedAdmin";
+import { useMutation } from "@tanstack/react-query";
+import { logoutAdmin } from "../admin.service";
+import { RiLogoutBoxLine } from "react-icons/ri";
 
 type Props = {
 	open: boolean;
@@ -7,6 +11,17 @@ type Props = {
 };
 
 export default function MobileDrawer({ open, onClose }: Props) {
+	const navigate = useNavigate();
+	const { clearAdmin } = useAuthenticatedAdmin();
+
+	const { mutate: logout, isPending } = useMutation({
+		mutationFn: logoutAdmin,
+		onSuccess: () => {
+			clearAdmin();
+			navigate("/admin/login", { replace: true });
+		},
+	});
+
 	return (
 		<>
 			{/* Overlay */}
@@ -48,6 +63,17 @@ export default function MobileDrawer({ open, onClose }: Props) {
 							</NavLink>
 						);
 					})}
+
+					<button
+						onClick={() => logout()}
+						disabled={isPending}
+						className="flex items-center gap-3 px-4 py-2 rounded-md transition hover:bg-zinc-100"
+					>
+						<RiLogoutBoxLine className="text-xl shrink-0" />
+						<span className="text-sm">
+							{open && (isPending ? "Logging out..." : "Logout")}
+						</span>
+					</button>
 				</nav>
 			</aside>
 		</>
