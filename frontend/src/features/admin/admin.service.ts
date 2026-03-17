@@ -1,4 +1,4 @@
-import { api } from "@/lib/api";
+import { api, sanctum } from "@/lib/api";
 import type {
 	AdminAuthResponse,
 	AdminLoginCredentials,
