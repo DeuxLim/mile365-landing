@@ -6,6 +6,12 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\MemberController;
 use App\Http\Controllers\DashboardController;
 
+Route::get('/csrf-token', function () {
+    return response()->json([
+        'csrfToken' => csrf_token(),
+    ]);
+});
+
 Route::get('/letsgo365', function () {
     return response()->json([
         'message' => 'Welcome to the API!'
