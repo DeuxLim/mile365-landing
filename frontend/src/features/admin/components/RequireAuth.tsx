@@ -4,7 +4,13 @@ import { useAuthenticatedAdmin } from "@/features/admin/hooks/useAuthenticatedAd
 export default function RequireAuth() {
 	const { admin, isPending } = useAuthenticatedAdmin();
 
-	if (isPending) return null;
+	if (isPending) {
+		return (
+			<div className="min-h-screen flex items-center justify-center text-sm text-neutral-500">
+				Loading…
+			</div>
+		);
+	}
 
 	if (!admin) {
 		return <Navigate to="/admin/login" replace />;
