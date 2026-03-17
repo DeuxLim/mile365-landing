@@ -10,12 +10,11 @@ import type {
 	MembershipRequestStatus,
 } from "@/features/membership/types/membership-request.types";
 import type { Member } from "./types/member.types";
-import { ensureCsrf } from "@/lib/api";
 
 export const submitLoginCredentials = async (
 	credentials: AdminLoginCredentials,
 ): Promise<AdminAuthResponse> => {
-	await ensureCsrf();
+	await sanctum.get("/sanctum/csrf-cookie");
 	const response = await api.post<AdminAuthResponse>(
 		"/admin/login",
 		credentials,
@@ -29,7 +28,6 @@ export const getAuthenticatedAdmin = async (): Promise<AdminUser> => {
 };
 
 export const logoutAdmin = async () => {
-	await ensureCsrf();
 	const response = await api.post("/admin/logout");
 	return response.data;
 };
@@ -78,7 +76,6 @@ export const updateMembershipRequestStatus = async ({
 	adminNote?: string;
 	status: MembershipRequestStatus;
 }): Promise<MembershipRequest> => {
-	await ensureCsrf();
 	const response = await api.patch(
 		`/admin/membership-requests/${membershipRequestId}/status`,
 		{ admin_notes: adminNote, status: status },
