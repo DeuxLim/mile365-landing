@@ -15,13 +15,13 @@ class SuperAdminSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create super admin
+        // Local/dev-only default. Do not use this seeder for production bootstrap.
         $user = User::updateOrCreate(
-            ['email' => 'limdeux27@gmail.com'],
+            ['email' => 'superadmin@example.com'],
             [
-                'first_name' => 'Deux',
-                'last_name' => 'Lim',
-                'password' => Hash::make('Test123123!'),
+                'first_name' => 'Super',
+                'last_name' => 'Admin',
+                'password' => Hash::make('passwordpassword'),
                 'status' => 'active',
             ]
         );

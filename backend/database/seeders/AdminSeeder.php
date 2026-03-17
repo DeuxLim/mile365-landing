@@ -18,22 +18,22 @@ class AdminSeeder extends Seeder
             [
                 'first_name' => 'TestAdmin1',
                 'last_name' => 'Local',
-                'email' => 'limdeux27@gmail.com',
-                'password' => 'Test123123!',
+                'email' => 'admin1@example.com',
+                'password' => 'passwordpassword',
                 'status' => 'active',
             ],
             [
                 'first_name' => 'TestAdmin2',
                 'last_name' => 'Local',
-                'email' => 'limdeux27@gmail.com',
-                'password' => 'Test123123!',
+                'email' => 'admin2@example.com',
+                'password' => 'passwordpassword',
                 'status' => 'active',
             ],
             [
                 'first_name' => 'TestAdmin3',
                 'last_name' => 'Local',
-                'email' => 'limdeux27@gmail.com',
-                'password' => 'Test123123!',
+                'email' => 'admin3@example.com',
+                'password' => 'passwordpassword',
                 'status' => 'active',
             ],
         ];
