@@ -17,6 +17,6 @@ class GalleryController extends Controller
             ]
         );
 
-        return response()->json($result['resources']);
+        return response()->json($result['resources'] ?? []);
     }
 }
