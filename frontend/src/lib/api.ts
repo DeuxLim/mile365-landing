@@ -14,4 +14,5 @@ export const api = axios.create({
 export const sanctum = axios.create({
 	baseURL,
 	withCredentials: true,
+	withXSRFToken: true,
 });
