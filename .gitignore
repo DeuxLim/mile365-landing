@@ -43,3 +43,6 @@ coverage
 
 TODO
 DEV.md
+
+certs/
+*.pem
