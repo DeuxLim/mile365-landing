@@ -13,52 +13,31 @@ class AuthController extends Controller
     {
         $credentials = $request->validate([
             'email' => ['required', 'email'],
-            'password' => ['required'],
-            'token_name' => ['nullable', 'string', 'max:255'],
+            'password' => ['required']
         ]);
 
-        if (!Auth::attempt([
-            'email' => $credentials['email'],
-            'password' => $credentials['password'],
-        ])) {
+        if (!Auth::attempt([...$credentials, 'status' => 'active'])) {
             return response()->json([
                 'message' => 'The provided credentials are incorrect.',
             ], 401);
         }
 
-        $user = $request->user();
-
-        if ($user->status !== 'active') {
+        $user = Auth::user();
+        if (!$user || !Gate::forUser($user)->allows('admin_access')) {
             Auth::logout();
-            return response()->json([
-                'message' => 'Inactive users cannot access.',
-            ], 403);
-        }
-
-        if (!Gate::forUser($user)->allows('admin_access')) {
-            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
 
             return response()->json([
                 'message' => 'You are not authorized to access admin.',
             ], 403);
         }
 
-        $user->tokens()->delete();
-        $token = $user->createToken($request->token_name ?? 'web-token');
+        $request->session()->regenerate();
 
         return response()->json([
             'message' => 'Login successful',
-            'token' => $token->plainTextToken,
-            'user' => $user->only(['id', 'email', 'first_name', 'last_name']),
-        ]);
-    }
-
-    public function logout(Request $request)
-    {
-        $request->user()->currentAccessToken()?->delete();
-
-        return response()->json([
-            'message' => 'Logged out successfully',
+            'user' => $user
         ]);
     }
 
@@ -66,6 +45,16 @@ class AuthController extends Controller
     {
         return response()->json([
             'user' => $request->user(),
+        ]);
+    }
+
+    public function logout(Request $request)
+    {
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return response()->json([
+            'message' => 'Logged out successfully',
         ]);
     }
 }
