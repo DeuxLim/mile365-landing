@@ -14,7 +14,7 @@ export default function Sidebar() {
 
 	const { mutate: logout, isPending } = useMutation({
 		mutationFn: logoutAdmin,
-		onSuccess: () => {
+		onSettled: () => {
 			clearAdmin();
 			navigate("/admin/login", { replace: true });
 		},

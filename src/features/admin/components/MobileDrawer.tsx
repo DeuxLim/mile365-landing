@@ -16,7 +16,7 @@ export default function MobileDrawer({ open, onClose }: Props) {
 
 	const { mutate: logout, isPending } = useMutation({
 		mutationFn: logoutAdmin,
-		onSuccess: () => {
+		onSettled: () => {
 			clearAdmin();
 			navigate("/admin/login", { replace: true });
 		},
