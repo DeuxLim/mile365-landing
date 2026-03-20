@@ -1,49 +1,35 @@
-# OS
-.DS_Store
-Thumbs.db
-
 # Logs
+logs
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# Environment
-.env
-.env.production
-.env.staging
-
-# Node
 node_modules
-npm-debug.log
-yarn-error.log
-pnpm-lock.yaml
+dist
+dist-ssr
+*.local
 
-# Frontend build
-frontend/dist
-frontend/.next
-frontend/.vite
-
-# Laravel
-backend/vendor
-backend/node_modules
-backend/storage/*.key
-backend/storage/logs/*
-backend/storage/framework/cache/*
-backend/storage/framework/sessions/*
-backend/storage/framework/views/*
-
-# Laravel cache
-backend/bootstrap/cache/*.php
-
-# IDE
+# Editor directories and files
 .vscode/*
 !.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+.env
+.env.*
+
+# Certificates
+certs/
+*.pem
 
 # Misc
 coverage
-*.sqlite
-
 TODO
-DEV.md
-
-certs/
-*.pem
-.vscode
