@@ -2,9 +2,9 @@ import { Navigate, Outlet } from "react-router";
 import { useAuthenticatedAdmin } from "@/features/admin/hooks/useAuthenticatedAdmin";
 
 export default function RequireAuth() {
-	const { admin, isPending } = useAuthenticatedAdmin();
+	const { admin, isAuthenticating } = useAuthenticatedAdmin();
 
-	if (isPending) {
+	if (isAuthenticating) {
 		return (
 			<div className="min-h-screen flex items-center justify-center text-sm text-neutral-500">
 				Loading…

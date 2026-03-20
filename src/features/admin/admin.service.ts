@@ -1,4 +1,5 @@
-import { api, sanctum } from "@/lib/api";
+import { adminApi } from "@/lib/api";
+import { clearAdminAuthToken, setAdminApiToken } from "@/lib/admin-auth-token";
 import type {
 	AdminAuthResponse,
 	AdminLoginCredentials,
@@ -14,22 +15,23 @@ import type { Member } from "./types/member.types";
 export const submitLoginCredentials = async (
 	credentials: AdminLoginCredentials,
 ): Promise<AdminAuthResponse> => {
-	await sanctum.get("/sanctum/csrf-cookie");
-	const response = await api.post<AdminAuthResponse>(
-		"/admin/login",
-		credentials,
-	);
+	const response = await adminApi.post<AdminAuthResponse>("/admin/login", credentials);
+	setAdminApiToken(response.data.token);
 	return response.data;
 };
 
 export const getAuthenticatedAdmin = async (): Promise<AdminUser> => {
-	const response = await api.get<AdminAuthResponse>("/admin/me");
+	const response = await adminApi.get<{ user: AdminUser }>("/admin/me");
 	return response.data.user;
 };
 
 export const logoutAdmin = async () => {
-	const response = await api.post("/admin/logout");
-	return response.data;
+	try {
+		const response = await adminApi.post("/admin/logout");
+		return response.data;
+	} finally {
+		clearAdminAuthToken();
+	}
 };
 
 export const getMembershipRequests = async (
@@ -45,7 +47,7 @@ export const getMembershipRequests = async (
 		params.set("search", options.search.trim());
 	}
 
-	const response = await api.get<PaginatedResponse<MembershipRequest>>(
+	const response = await adminApi.get<PaginatedResponse<MembershipRequest>>(
 		`/admin/membership-requests?${params.toString()}`,
 	);
 	return response.data;
@@ -61,7 +63,7 @@ export const getMembers = async (
 		params.set("search", search.trim());
 	}
 
-	const response = await api.get<PaginatedResponse<Member>>(
+	const response = await adminApi.get<PaginatedResponse<Member>>(
 		`/admin/members?${params.toString()}`,
 	);
 	return response.data;
@@ -76,7 +78,7 @@ export const updateMembershipRequestStatus = async ({
 	adminNote?: string;
 	status: MembershipRequestStatus;
 }): Promise<MembershipRequest> => {
-	const response = await api.patch(
+	const response = await adminApi.patch(
 		`/admin/membership-requests/${membershipRequestId}/status`,
 		{ admin_notes: adminNote, status: status },
 	);
@@ -85,6 +87,6 @@ export const updateMembershipRequestStatus = async ({
 };
 
 export const getDashboardStats = async () => {
-	const response = await api.get("/admin/dashboard/stats");
+	const response = await adminApi.get("/admin/dashboard/stats");
 	return response.data;
 };

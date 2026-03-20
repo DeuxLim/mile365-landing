@@ -1,7 +1,7 @@
-import { api } from "@/lib/api";
+import { publicApi } from "@/lib/api";
 
 export const getClubGalleryPhotos = async () => {
-	const res = await api.get("landing/gallery");
+	const res = await publicApi.get("landing/gallery");
 	const payload = res.data;
 
 	if (Array.isArray(payload)) return payload;
